@@ -1,38 +1,31 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
 
 void yyerror(const char *s);
 int yylex();
 %}
 
-%token INT ID NUMBER ASSIGN SEMI
+%union{
+    int num;
+    char* id;
+}
+
+%token <num> NUM
+%token <id> ID
+%token ASSIGN SEMI
 
 %%
-
-program:
-      declaration
-    | assignment
-    ;
-
-declaration:
-      INT ID SEMI
-        { printf("Declaration valid\n"); }
-    ;
-
-assignment:
-      ID ASSIGN NUMBER SEMI
-        { printf("Assignment valid\n"); }
-    ;
-
+S:
+    ID ASSIGN NUM SEMI{
+        printf("Parsed %s = %d\n", $1, $3);
+    }
 %%
 
-void yyerror(const char *s) {
-    printf("Error: %s\n", s);
+void yyerror(const char *s){
+    printf("Syntax Error: %s\n", s);
 }
 
 int main() {
-    printf("Enter program:\n");
-    yyparse();
-    return 0;
+    return yyparse();
 }

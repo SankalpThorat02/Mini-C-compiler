@@ -49,17 +49,26 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
+    NUM = 258,
     ID = 259,
-    NUMBER = 260,
-    ASSIGN = 261,
-    SEMI = 262
+    ASSIGN = 260,
+    SEMI = 261
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 9 "parser.y"
+
+    int num;
+    char* id;
+
+#line 69 "parser.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

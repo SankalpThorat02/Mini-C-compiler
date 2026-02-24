@@ -16,6 +16,7 @@ int yylex();
 %token <id> ID
 %token ASSIGN SEMI
 %token PLUS MUL MINUS DIV
+%token LPAREN RPAREN
 
 %left PLUS MINUS
 %left MUL DIV
@@ -31,6 +32,7 @@ E:
     | E MUL E { $$ = $1 * $3; }
     | E MINUS E { $$ = $1 - $3; }
     | E DIV E { $$ = $1 / $3; }
+    | LPAREN E RPAREN { $$ = $2; }
     | NUM { $$ = $1; };
 %%
 

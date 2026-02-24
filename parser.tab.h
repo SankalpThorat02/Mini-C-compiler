@@ -56,7 +56,9 @@ extern int yydebug;
     PLUS = 262,
     MUL = 263,
     MINUS = 264,
-    DIV = 265
+    DIV = 265,
+    LPAREN = 266,
+    RPAREN = 267
   };
 #endif
 
@@ -69,7 +71,7 @@ union YYSTYPE
     int num;
     char* id;
 
-#line 73 "parser.tab.h"
+#line 75 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

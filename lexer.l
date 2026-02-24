@@ -16,6 +16,9 @@
 "="                         { return ASSIGN; }
 ";"                         { return SEMI; }
 
+"("                         { return LPAREN; }
+")"                         { return RPAREN; }
+
 [ \t\n]                     ;
 .                           {printf("Lexical Error: %s\n", yytext);}
 

@@ -11,6 +11,8 @@
 
 "+"                         { return PLUS; }
 "*"                         { return MUL; }
+"-"                         { return MINUS; }
+"/"                         { return DIV; }
 "="                         { return ASSIGN; }
 ";"                         { return SEMI; }
 

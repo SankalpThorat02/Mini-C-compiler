@@ -15,10 +15,10 @@ int yylex();
 %token <num> NUM
 %token <id> ID
 %token ASSIGN SEMI
-%token PLUS MUL
+%token PLUS MUL MINUS DIV
 
-%left PLUS
-%left MUL
+%left PLUS MINUS
+%left MUL DIV
 
 %%
 S:
@@ -27,8 +27,10 @@ S:
         printf("Parsed %s = %d\n", $1, $3);
     };
 E:
-    E PLUS E { $$ = $1 + $3; }
+      E PLUS E { $$ = $1 + $3; }
     | E MUL E { $$ = $1 * $3; }
+    | E MINUS E { $$ = $1 - $3; }
+    | E DIV E { $$ = $1 / $3; }
     | NUM { $$ = $1; };
 %%
 

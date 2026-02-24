@@ -25,16 +25,34 @@ void insert(char* name) {
         symtab[symCount++] = strdup(name);
     }
 }
+
+typdef struct ASTNode {
+    char* type;
+    char* value;
+    struct ASTNode* left;
+    struct ASTNode* right;
+} ASTNode;
+
+ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
+    ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
+    node->type = strdup(type);
+    node->value = value ? strdup(value) : NULL;
+    node->left = left;
+    node->right = right;
+
+    return node;
+}
+
 %}
 
 %union{
-    int num;
-    char* id;
+    ASTNode* node;
+    char* str;
 }
 
-%type <num> E
-%token <num> NUM
-%token <id> ID
+%type <node> E S 
+%token <str> NUM
+%token <str> ID
 %token ASSIGN SEMI
 %token PLUS MUL MINUS DIV
 %token LPAREN RPAREN
@@ -62,16 +80,17 @@ S:
         if(!lookup($1)) {
             printf("Semantic Error: %s not declared\n", $1);
         } else {
-            printf("Assigned %s = %d\n", $1, $3);
+            ASTNode* idNode = createNode("ID", $1, NULL, NULL);
+            $$ = createNode("=", NULL, idNode, $3)
         }
     };
 E:
-      E PLUS E { $$ = $1 + $3; }
-    | E MUL E { $$ = $1 * $3; }
-    | E MINUS E { $$ = $1 - $3; }
-    | E DIV E { $$ = $1 / $3; }
+      E PLUS E { $$ = createNode("+", NULL, $1, $3); }
+    | E MUL E { $$ = createNode("*", NULL, $1, $3); }
+    | E MINUS E { $$ = createNode("-", NULL, $1, $3); }
+    | E DIV E { $$ = createNode("/", NULL, $1, $3); }
     | LPAREN E RPAREN { $$ = $2; }
-    | NUM { $$ = $1; };
+    | NUM { $$ = createNode("NUM", $1, NULL, NULL); };
 %%
 
 void yyerror(const char *s){

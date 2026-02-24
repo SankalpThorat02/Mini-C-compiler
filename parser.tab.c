@@ -71,6 +71,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include "ast.h"
 
 #define MAX 100
 
@@ -95,7 +96,18 @@ void insert(char* name) {
     }
 }
 
-#line 99 "parser.tab.c"
+ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
+    ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
+    node->type = strdup(type);
+    node->value = value ? strdup(value) : NULL;
+    node->left = left;
+    node->right = right;
+
+    return node;
+}
+
+
+#line 111 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -161,12 +173,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 30 "parser.y"
+#line 42 "parser.y"
 
-    int num;
-    char* id;
+    ASTNode* node;
+    char* str;
 
-#line 170 "parser.tab.c"
+#line 182 "parser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -485,16 +497,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   24
+#define YYLAST   27
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  14
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  11
+#define YYNRULES  12
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  23
+#define YYNSTATES  24
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   268
@@ -542,8 +554,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    48,    48,    50,    53,    61,    69,    70,    71,    72,
-      73,    74
+       0,    61,    61,    62,    65,    74,    84,    85,    86,    87,
+      88,    89,    90
 };
 #endif
 
@@ -568,7 +580,7 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-9)
+#define YYPACT_NINF (-10)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -582,9 +594,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -9,     0,    -9,     6,     8,    -9,    -1,    12,    -9,    -1,
-      14,    -9,     7,    -9,    -1,    -1,    -1,    -1,    -9,    -5,
-      -9,    -5,    -9
+     -10,     0,   -10,     6,     1,   -10,    -1,    12,   -10,   -10,
+      -1,    14,   -10,     7,   -10,    -1,    -1,    -1,    -1,   -10,
+      17,   -10,    17,   -10
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -592,21 +604,21 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       2,     0,     1,     0,     0,     3,     0,     0,    11,     0,
-       0,     4,     0,     5,     0,     0,     0,     0,    10,     6,
-       7,     8,     9
+       2,     0,     1,     0,     0,     3,     0,     0,    11,    12,
+       0,     0,     4,     0,     5,     0,     0,     0,     0,    10,
+       6,     7,     8,     9
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -9,    -9,    -9,    -8
+     -10,   -10,   -10,    -9
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     5,    10
+      -1,     1,     5,    11
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -614,39 +626,39 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       2,    12,     8,    15,     3,    17,    19,    20,    21,    22,
-       9,     6,     7,     4,    14,    15,    16,    17,    11,    18,
-      13,    14,    15,    16,    17
+       2,    13,     8,     9,     3,     7,    20,    21,    22,    23,
+      10,     6,     0,     4,    15,    16,    17,    18,    12,    19,
+      14,    15,    16,    17,    18,    16,     0,    18
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     9,     3,     8,     4,    10,    14,    15,    16,    17,
-      11,     5,     4,    13,     7,     8,     9,    10,     6,    12,
-       6,     7,     8,     9,    10
+       0,    10,     3,     4,     4,     4,    15,    16,    17,    18,
+      11,     5,    -1,    13,     7,     8,     9,    10,     6,    12,
+       6,     7,     8,     9,    10,     8,    -1,    10
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    15,     0,     4,    13,    16,     5,     4,     3,    11,
-      17,     6,    17,     6,     7,     8,     9,    10,    12,    17,
-      17,    17,    17
+       0,    15,     0,     4,    13,    16,     5,     4,     3,     4,
+      11,    17,     6,    17,     6,     7,     8,     9,    10,    12,
+      17,    17,    17,    17
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    14,    15,    15,    16,    16,    17,    17,    17,    17,
-      17,    17
+      17,    17,    17
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     0,     2,     3,     4,     3,     3,     3,     3,
-       3,     1
+       3,     1,     1
 };
 
 
@@ -1341,69 +1353,95 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 2:
+#line 61 "parser.y"
+                  { (yyval.node) = NULL; }
+#line 1360 "parser.tab.c"
+    break;
+
+  case 3:
+#line 62 "parser.y"
+                { (yyval.node) = createNode("PROGRAM", NULL, (yyvsp[-1].node), (yyvsp[0].node)); }
+#line 1366 "parser.tab.c"
+    break;
+
   case 4:
-#line 53 "parser.y"
+#line 65 "parser.y"
                 {  
-        if(lookup((yyvsp[-1].id))) {
-            printf("Semantic Error: Redeclaration of %s\n", (yyvsp[-1].id));
+        if(lookup((yyvsp[-1].str))) {
+            printf("Semantic Error: Redeclaration of %s\n", (yyvsp[-1].str));
         } else {
-            insert((yyvsp[-1].id));
-            printf("Declared %s\n", (yyvsp[-1].id));
+            insert((yyvsp[-1].str));
         }
+        ASTNode* idNode = createNode("ID", (yyvsp[-1].str), NULL, NULL);
+        (yyval.node) = createNode("DECL", NULL, idNode, NULL);
     }
-#line 1355 "parser.tab.c"
+#line 1380 "parser.tab.c"
     break;
 
   case 5:
-#line 61 "parser.y"
+#line 74 "parser.y"
                        { 
-        if(!lookup((yyvsp[-3].id))) {
-            printf("Semantic Error: %s not declared\n", (yyvsp[-3].id));
-        } else {
-            printf("Assigned %s = %d\n", (yyvsp[-3].id), (yyvsp[-1].num));
+        ASTNode* idNode = createNode("ID", (yyvsp[-3].str), NULL, NULL);
+
+        if(!lookup((yyvsp[-3].str))) {
+            printf("Semantic Error: %s not declared\n", (yyvsp[-3].str));
         }
+        (yyval.node) = createNode("=", NULL, idNode, (yyvsp[-1].node));
+        
     }
-#line 1367 "parser.tab.c"
+#line 1394 "parser.tab.c"
     break;
 
   case 6:
-#line 69 "parser.y"
-               { (yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num); }
-#line 1373 "parser.tab.c"
+#line 84 "parser.y"
+               { (yyval.node) = createNode("+", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1400 "parser.tab.c"
     break;
 
   case 7:
-#line 70 "parser.y"
-              { (yyval.num) = (yyvsp[-2].num) * (yyvsp[0].num); }
-#line 1379 "parser.tab.c"
+#line 85 "parser.y"
+              { (yyval.node) = createNode("*", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1406 "parser.tab.c"
     break;
 
   case 8:
-#line 71 "parser.y"
-                { (yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num); }
-#line 1385 "parser.tab.c"
+#line 86 "parser.y"
+                { (yyval.node) = createNode("-", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1412 "parser.tab.c"
     break;
 
   case 9:
-#line 72 "parser.y"
-              { (yyval.num) = (yyvsp[-2].num) / (yyvsp[0].num); }
-#line 1391 "parser.tab.c"
+#line 87 "parser.y"
+              { (yyval.node) = createNode("/", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1418 "parser.tab.c"
     break;
 
   case 10:
-#line 73 "parser.y"
-                      { (yyval.num) = (yyvsp[-1].num); }
-#line 1397 "parser.tab.c"
+#line 88 "parser.y"
+                      { (yyval.node) = (yyvsp[-1].node); }
+#line 1424 "parser.tab.c"
     break;
 
   case 11:
-#line 74 "parser.y"
-          { (yyval.num) = (yyvsp[0].num); }
-#line 1403 "parser.tab.c"
+#line 89 "parser.y"
+          { (yyval.node) = createNode("NUM", (yyvsp[0].str), NULL, NULL); }
+#line 1430 "parser.tab.c"
+    break;
+
+  case 12:
+#line 90 "parser.y"
+         { 
+        if(!lookup((yyvsp[0].str))) {
+            printf("Semantic Error: %s not declared\n", (yyvsp[0].str));
+        }
+        (yyval.node) = createNode("ID", (yyvsp[0].str), NULL, NULL); 
+      }
+#line 1441 "parser.tab.c"
     break;
 
 
-#line 1407 "parser.tab.c"
+#line 1445 "parser.tab.c"
 
       default: break;
     }
@@ -1635,7 +1673,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 75 "parser.y"
+#line 96 "parser.y"
 
 
 void yyerror(const char *s){

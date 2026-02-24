@@ -451,11 +451,12 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "lexer.l"
 #line 2 "lexer.l"
+#include "ast.h"
+#include "parser.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "parser.tab.h"
-#line 458 "lex.yy.c"
 #line 459 "lex.yy.c"
+#line 460 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -672,10 +673,10 @@ YY_DECL
 		}
 
 	{
-#line 7 "lexer.l"
+#line 8 "lexer.l"
 
 
-#line 679 "lex.yy.c"
+#line 680 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -734,76 +735,76 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 9 "lexer.l"
+#line 10 "lexer.l"
 { return INT; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 10 "lexer.l"
-{ yylval.num = atoi(yytext); return NUM; }
+#line 11 "lexer.l"
+{ yylval.str = strdup(yytext); return NUM; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 11 "lexer.l"
-{ yylval.id = strdup(yytext); return ID; }
+#line 12 "lexer.l"
+{ yylval.str = strdup(yytext); return ID; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 13 "lexer.l"
+#line 14 "lexer.l"
 { return PLUS; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 14 "lexer.l"
+#line 15 "lexer.l"
 { return MUL; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 15 "lexer.l"
+#line 16 "lexer.l"
 { return MINUS; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 16 "lexer.l"
+#line 17 "lexer.l"
 { return DIV; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 17 "lexer.l"
+#line 18 "lexer.l"
 { return ASSIGN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 18 "lexer.l"
+#line 19 "lexer.l"
 { return SEMI; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 20 "lexer.l"
+#line 21 "lexer.l"
 { return LPAREN; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 21 "lexer.l"
+#line 22 "lexer.l"
 { return RPAREN; }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 23 "lexer.l"
+#line 24 "lexer.l"
 ;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 24 "lexer.l"
+#line 25 "lexer.l"
 {printf("Lexical Error: %s\n", yytext);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 26 "lexer.l"
+#line 27 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 807 "lex.yy.c"
+#line 808 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1808,7 +1809,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 26 "lexer.l"
+#line 27 "lexer.l"
 
 
 int yywrap() {

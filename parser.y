@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include "ast.h"
 
 #define MAX 100
 
@@ -26,13 +27,6 @@ void insert(char* name) {
     }
 }
 
-typdef struct ASTNode {
-    char* type;
-    char* value;
-    struct ASTNode* left;
-    struct ASTNode* right;
-} ASTNode;
-
 ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
     node->type = strdup(type);
@@ -50,7 +44,7 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     char* str;
 }
 
-%type <node> E S 
+%type <node> E S program
 %token <str> NUM
 %token <str> ID
 %token ASSIGN SEMI
@@ -64,8 +58,8 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
 
 %%
 program:
-      /* empty */
-    | program S;
+      /* empty */ { $$ = NULL; }
+    | program S { $$ = createNode("PROGRAM", NULL, $1, $2); };
 
 S:  
     INT ID SEMI {  
@@ -73,16 +67,18 @@ S:
             printf("Semantic Error: Redeclaration of %s\n", $2);
         } else {
             insert($2);
-            printf("Declared %s\n", $2);
         }
+        ASTNode* idNode = createNode("ID", $2, NULL, NULL);
+        $$ = createNode("DECL", NULL, idNode, NULL);
     }
     | ID ASSIGN E SEMI { 
+        ASTNode* idNode = createNode("ID", $1, NULL, NULL);
+
         if(!lookup($1)) {
             printf("Semantic Error: %s not declared\n", $1);
-        } else {
-            ASTNode* idNode = createNode("ID", $1, NULL, NULL);
-            $$ = createNode("=", NULL, idNode, $3)
         }
+        $$ = createNode("=", NULL, idNode, $3);
+        
     };
 E:
       E PLUS E { $$ = createNode("+", NULL, $1, $3); }
@@ -90,7 +86,13 @@ E:
     | E MINUS E { $$ = createNode("-", NULL, $1, $3); }
     | E DIV E { $$ = createNode("/", NULL, $1, $3); }
     | LPAREN E RPAREN { $$ = $2; }
-    | NUM { $$ = createNode("NUM", $1, NULL, NULL); };
+    | NUM { $$ = createNode("NUM", $1, NULL, NULL); }
+    | ID { 
+        if(!lookup($1)) {
+            printf("Semantic Error: %s not declared\n", $1);
+        }
+        $$ = createNode("ID", $1, NULL, NULL); 
+      };
 %%
 
 void yyerror(const char *s){

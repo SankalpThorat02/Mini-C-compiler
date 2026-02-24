@@ -58,7 +58,8 @@ extern int yydebug;
     MINUS = 264,
     DIV = 265,
     LPAREN = 266,
-    RPAREN = 267
+    RPAREN = 267,
+    INT = 268
   };
 #endif
 
@@ -66,12 +67,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 9 "parser.y"
+#line 30 "parser.y"
 
     int num;
     char* id;
 
-#line 75 "parser.tab.h"
+#line 76 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

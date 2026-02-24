@@ -15,21 +15,21 @@ int yylex();
 %token <num> NUM
 %token <id> ID
 %token ASSIGN SEMI
-%token PLUS
+%token PLUS MUL
+
+%left PLUS
+%left MUL
 
 %%
 S:
-    ID ASSIGN E SEMI{
+    ID ASSIGN E SEMI
+    {
         printf("Parsed %s = %d\n", $1, $3);
     };
 E:
-    E PLUS NUM {
-        $$ = $1 + $3;
-    }
-    |
-    NUM {
-        $$ = $1;
-    };
+    E PLUS E { $$ = $1 + $3; }
+    | E MUL E { $$ = $1 * $3; }
+    | NUM { $$ = $1; };
 %%
 
 void yyerror(const char *s){

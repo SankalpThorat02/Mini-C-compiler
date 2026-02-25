@@ -69,7 +69,7 @@ S:
             insert($2);
         }
         ASTNode* idNode = createNode("ID", $2, NULL, NULL);
-        $$ = createNode("DECL", NULL, idNode, NULL);
+        $$ = createNode("DECL", "int", idNode, NULL);
     }
     | ID ASSIGN E SEMI { 
         ASTNode* idNode = createNode("ID", $1, NULL, NULL);

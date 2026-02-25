@@ -12,6 +12,7 @@ int yylex();
 char* symtab[MAX];
 int symCount = 0;
 
+int tempCount = 1;
 ASTNode* root = NULL;
 
 int lookup(char* name) {
@@ -77,6 +78,46 @@ void printAST(ASTNode* root, int depth){
     printAST(root->right, depth + 1);
 }
 
+char* newTemp() {
+    char buffer[10];
+    sprintf(buffer, "t%d", tempCount++);
+    return strdup(buffer);
+}
+
+char* generateTAC(ASTNode* node) {
+    if(!node) return NULL;
+
+    if(strcmp(node->type, "ID") == 0 || strcmp(node->type, "NUM") == 0) {
+        return node->value;
+    }
+
+    if(strcmp(node->type, "+") == 0 || 
+       strcmp(node->type, "-") == 0 || 
+       strcmp(node->type, "*") == 0 ||
+       strcmp(node->type, "/") == 0 ) {
+        
+        char* left = generateTAC(node->left);
+        char* right = generateTAC(node->right);
+
+        char* temp = newTemp();
+        printf("%s = %s %s %s\n", temp, left, node->type, right);
+
+        return temp;
+    }
+
+    if(strcmp(node->type, "=") == 0) {
+        char* right = generateTAC(node->right);
+        printf("%s = %s\n", node->left->value, right);
+        
+        return node->left->value;
+    }
+
+    generateTAC(node->left);
+    generateTAC(node->right);
+
+    return NULL;
+}
+
 %}
 
 %union{
@@ -135,6 +176,9 @@ int main() {
 
     printf("--------------- Semantic Check ---------------\n");
     semanticCheck(root);
+
+    printf("--------------- TAC ---------------\n");
+    generateTAC(root); 
 
     return 0;
 }

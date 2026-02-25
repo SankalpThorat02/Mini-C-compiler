@@ -12,21 +12,6 @@ int yylex();
 char* symtab[MAX];
 int symCount = 0;
 
-int lookup(char* name) {
-    for(int i = 0; i < symCount; i++) {
-        if(strcmp(symtab[i], name) == 0){
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void insert(char* name) {
-    if(symCount < MAX) {
-        symtab[symCount++] = strdup(name);
-    }
-}
-
 ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
     node->type = strdup(type);
@@ -63,20 +48,11 @@ program:
 
 S:  
     INT ID SEMI {  
-        if(lookup($2)) {
-            printf("Semantic Error: Redeclaration of %s\n", $2);
-        } else {
-            insert($2);
-        }
         ASTNode* idNode = createNode("ID", $2, NULL, NULL);
         $$ = createNode("DECL", "int", idNode, NULL);
     }
     | ID ASSIGN E SEMI { 
         ASTNode* idNode = createNode("ID", $1, NULL, NULL);
-
-        if(!lookup($1)) {
-            printf("Semantic Error: %s not declared\n", $1);
-        }
         $$ = createNode("=", NULL, idNode, $3);
         
     };
@@ -87,12 +63,7 @@ E:
     | E DIV E { $$ = createNode("/", NULL, $1, $3); }
     | LPAREN E RPAREN { $$ = $2; }
     | NUM { $$ = createNode("NUM", $1, NULL, NULL); }
-    | ID { 
-        if(!lookup($1)) {
-            printf("Semantic Error: %s not declared\n", $1);
-        }
-        $$ = createNode("ID", $1, NULL, NULL); 
-      };
+    | ID { $$ = createNode("ID", $1, NULL, NULL); };
 %%
 
 void yyerror(const char *s){

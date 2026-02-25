@@ -40,7 +40,7 @@ void semanticCheck(ASTNode* root) {
     if(!root) return;
 
     if(strcmp("DECL", root->type) == 0) {
-        char* name = root->left->val;
+        char* name = root->left->value;
         if(lookup(name)) {
             printf("Semantic Error: Redeclaration of %s\n", name);
         } else {
@@ -56,6 +56,22 @@ void semanticCheck(ASTNode* root) {
 
     semanticCheck(root->left);
     semanticCheck(root->right);
+}
+
+void printAST(ASTNode* root, int depth){
+    if(!root) return;
+
+    for(int i = 0; i < depth; i++) {
+        printf(" ");
+    }
+
+    if(root->value) {
+        printf("%s (%s)\n", root->type, root->value);
+    }
+    else printf("%s\n", root->type);
+
+    printAST(root->left);
+    printAST(root->right);
 }
 
 %}

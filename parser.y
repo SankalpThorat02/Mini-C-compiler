@@ -12,6 +12,8 @@ int yylex();
 char* symtab[MAX];
 int symCount = 0;
 
+ASTNode* root = NULL;
+
 int lookup(char* name) {
     for(int i = 0; i < symCount; i++){
         if(strcmp(symtab[i], name) == 0)
@@ -49,6 +51,7 @@ void semanticCheck(ASTNode* root) {
     }
 
     if(strcmp("ID", root->type) == 0) {
+        char* name = root->value;
         if(!lookup(name)) {
             printf("Semantic Error: %s not declared\n", name);
         }
@@ -62,7 +65,7 @@ void printAST(ASTNode* root, int depth){
     if(!root) return;
 
     for(int i = 0; i < depth; i++) {
-        printf(" ");
+        printf("  ");
     }
 
     if(root->value) {
@@ -70,8 +73,8 @@ void printAST(ASTNode* root, int depth){
     }
     else printf("%s\n", root->type);
 
-    printAST(root->left);
-    printAST(root->right);
+    printAST(root->left, depth + 1);
+    printAST(root->right, depth + 1);
 }
 
 %}
@@ -96,7 +99,10 @@ void printAST(ASTNode* root, int depth){
 %%
 program:
       /* empty */ { $$ = NULL; }
-    | program S { $$ = createNode("PROGRAM", NULL, $1, $2); };
+    | program S { 
+        $$ = createNode("PROGRAM", NULL, $1, $2); 
+        root = $$;
+      };
 
 S:  
     INT ID SEMI {  

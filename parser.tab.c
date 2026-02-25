@@ -81,11 +81,12 @@ int yylex();
 char* symtab[MAX];
 int symCount = 0;
 
+ASTNode* root = NULL;
+
 int lookup(char* name) {
-    for(int i = 0; i < symCount; i++) {
-        if(strcmp(symtab[i], name) == 0){
+    for(int i = 0; i < symCount; i++){
+        if(strcmp(symtab[i], name) == 0)
             return 1;
-        }
     }
     return 0;
 }
@@ -106,8 +107,47 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     return node;
 }
 
+void semanticCheck(ASTNode* root) {
+    if(!root) return;
 
-#line 111 "parser.tab.c"
+    if(strcmp("DECL", root->type) == 0) {
+        char* name = root->left->value;
+        if(lookup(name)) {
+            printf("Semantic Error: Redeclaration of %s\n", name);
+        } else {
+            insert(name);
+        }
+    }
+
+    if(strcmp("ID", root->type) == 0) {
+        char* name = root->value;
+        if(!lookup(name)) {
+            printf("Semantic Error: %s not declared\n", name);
+        }
+    }
+
+    semanticCheck(root->left);
+    semanticCheck(root->right);
+}
+
+void printAST(ASTNode* root, int depth){
+    if(!root) return;
+
+    for(int i = 0; i < depth; i++) {
+        printf("  ");
+    }
+
+    if(root->value) {
+        printf("%s (%s)\n", root->type, root->value);
+    }
+    else printf("%s\n", root->type);
+
+    printAST(root->left, depth + 1);
+    printAST(root->right, depth + 1);
+}
+
+
+#line 151 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -173,12 +213,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 42 "parser.y"
+#line 82 "parser.y"
 
     ASTNode* node;
     char* str;
 
-#line 182 "parser.tab.c"
+#line 222 "parser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -554,8 +594,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    61,    61,    62,    65,    74,    84,    85,    86,    87,
-      88,    89,    90
+       0,   101,   101,   102,   108,   112,   118,   119,   120,   121,
+     122,   123,   124
 };
 #endif
 
@@ -1354,94 +1394,83 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 61 "parser.y"
+#line 101 "parser.y"
                   { (yyval.node) = NULL; }
-#line 1360 "parser.tab.c"
-    break;
-
-  case 3:
-#line 62 "parser.y"
-                { (yyval.node) = createNode("PROGRAM", NULL, (yyvsp[-1].node), (yyvsp[0].node)); }
-#line 1366 "parser.tab.c"
-    break;
-
-  case 4:
-#line 65 "parser.y"
-                {  
-        if(lookup((yyvsp[-1].str))) {
-            printf("Semantic Error: Redeclaration of %s\n", (yyvsp[-1].str));
-        } else {
-            insert((yyvsp[-1].str));
-        }
-        ASTNode* idNode = createNode("ID", (yyvsp[-1].str), NULL, NULL);
-        (yyval.node) = createNode("DECL", NULL, idNode, NULL);
-    }
-#line 1380 "parser.tab.c"
-    break;
-
-  case 5:
-#line 74 "parser.y"
-                       { 
-        ASTNode* idNode = createNode("ID", (yyvsp[-3].str), NULL, NULL);
-
-        if(!lookup((yyvsp[-3].str))) {
-            printf("Semantic Error: %s not declared\n", (yyvsp[-3].str));
-        }
-        (yyval.node) = createNode("=", NULL, idNode, (yyvsp[-1].node));
-        
-    }
-#line 1394 "parser.tab.c"
-    break;
-
-  case 6:
-#line 84 "parser.y"
-               { (yyval.node) = createNode("+", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
 #line 1400 "parser.tab.c"
     break;
 
-  case 7:
-#line 85 "parser.y"
-              { (yyval.node) = createNode("*", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1406 "parser.tab.c"
+  case 3:
+#line 102 "parser.y"
+                { 
+        (yyval.node) = createNode("PROGRAM", NULL, (yyvsp[-1].node), (yyvsp[0].node)); 
+        root = (yyval.node);
+      }
+#line 1409 "parser.tab.c"
     break;
 
-  case 8:
-#line 86 "parser.y"
-                { (yyval.node) = createNode("-", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1412 "parser.tab.c"
-    break;
-
-  case 9:
-#line 87 "parser.y"
-              { (yyval.node) = createNode("/", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+  case 4:
+#line 108 "parser.y"
+                {  
+        ASTNode* idNode = createNode("ID", (yyvsp[-1].str), NULL, NULL);
+        (yyval.node) = createNode("DECL", "int", idNode, NULL);
+    }
 #line 1418 "parser.tab.c"
     break;
 
+  case 5:
+#line 112 "parser.y"
+                       { 
+        ASTNode* idNode = createNode("ID", (yyvsp[-3].str), NULL, NULL);
+        (yyval.node) = createNode("=", NULL, idNode, (yyvsp[-1].node));
+        
+    }
+#line 1428 "parser.tab.c"
+    break;
+
+  case 6:
+#line 118 "parser.y"
+               { (yyval.node) = createNode("+", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1434 "parser.tab.c"
+    break;
+
+  case 7:
+#line 119 "parser.y"
+              { (yyval.node) = createNode("*", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1440 "parser.tab.c"
+    break;
+
+  case 8:
+#line 120 "parser.y"
+                { (yyval.node) = createNode("-", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1446 "parser.tab.c"
+    break;
+
+  case 9:
+#line 121 "parser.y"
+              { (yyval.node) = createNode("/", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1452 "parser.tab.c"
+    break;
+
   case 10:
-#line 88 "parser.y"
+#line 122 "parser.y"
                       { (yyval.node) = (yyvsp[-1].node); }
-#line 1424 "parser.tab.c"
+#line 1458 "parser.tab.c"
     break;
 
   case 11:
-#line 89 "parser.y"
+#line 123 "parser.y"
           { (yyval.node) = createNode("NUM", (yyvsp[0].str), NULL, NULL); }
-#line 1430 "parser.tab.c"
+#line 1464 "parser.tab.c"
     break;
 
   case 12:
-#line 90 "parser.y"
-         { 
-        if(!lookup((yyvsp[0].str))) {
-            printf("Semantic Error: %s not declared\n", (yyvsp[0].str));
-        }
-        (yyval.node) = createNode("ID", (yyvsp[0].str), NULL, NULL); 
-      }
-#line 1441 "parser.tab.c"
+#line 124 "parser.y"
+         { (yyval.node) = createNode("ID", (yyvsp[0].str), NULL, NULL); }
+#line 1470 "parser.tab.c"
     break;
 
 
-#line 1445 "parser.tab.c"
+#line 1474 "parser.tab.c"
 
       default: break;
     }
@@ -1673,7 +1702,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 96 "parser.y"
+#line 125 "parser.y"
 
 
 void yyerror(const char *s){
@@ -1681,5 +1710,12 @@ void yyerror(const char *s){
 }
 
 int main() {
-    return yyparse();
+    yyparse();
+    printf("--------------- AST ----------------\n");
+    printAST(root, 0);
+
+    printf("--------------- Semantic Check ---------------\n");
+    semanticCheck(root);
+
+    return 0;
 }

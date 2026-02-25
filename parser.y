@@ -12,6 +12,20 @@ int yylex();
 char* symtab[MAX];
 int symCount = 0;
 
+int lookup(char* name) {
+    for(int i = 0; i < symCount; i++){
+        if(strcmp(symtab[i], name) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+void insert(char* name) {
+    if(symCount < MAX) {
+        symtab[symCount++] = strdup(name);
+    }
+}
+
 ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
     node->type = strdup(type);
@@ -20,6 +34,28 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     node->right = right;
 
     return node;
+}
+
+void semanticCheck(ASTNode* root) {
+    if(!root) return;
+
+    if(strcmp("DECL", root->type) == 0) {
+        char* name = root->left->val;
+        if(lookup(name)) {
+            printf("Semantic Error: Redeclaration of %s\n", name);
+        } else {
+            insert(name);
+        }
+    }
+
+    if(strcmp("ID", root->type) == 0) {
+        if(!lookup(name)) {
+            printf("Semantic Error: %s not declared\n", name);
+        }
+    }
+
+    semanticCheck(root->left);
+    semanticCheck(root->right);
 }
 
 %}
@@ -71,5 +107,12 @@ void yyerror(const char *s){
 }
 
 int main() {
-    return yyparse();
+    yyparse();
+    printf("--------------- AST ----------------\n");
+    printAST(root, 0);
+
+    printf("--------------- Semantic Check ---------------\n");
+    semanticCheck(root);
+
+    return 0;
 }

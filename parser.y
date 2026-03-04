@@ -9,7 +9,12 @@
 void yyerror(const char *s);
 int yylex();
 
-char* symtab[MAX];
+typedef struct {
+    char* name;
+    char* type;
+} Symbol;
+
+Symbol symtab[MAX];
 int symCount = 0;
 
 int tempCount = 1;
@@ -17,15 +22,17 @@ ASTNode* root = NULL;
 
 int lookup(char* name) {
     for(int i = 0; i < symCount; i++){
-        if(strcmp(symtab[i], name) == 0)
+        if(strcmp(symtab[i].name, name) == 0)
             return 1;
     }
     return 0;
 }
 
-void insert(char* name) {
+void insert(char* name, char* type) {
     if(symCount < MAX) {
-        symtab[symCount++] = strdup(name);
+        symtab[symCount].name = strdup(name);
+        symtab[symCount].type = strdup(type);
+        symCount++;
     }
 }
 
@@ -43,11 +50,12 @@ void semanticCheck(ASTNode* root) {
     if(!root) return;
 
     if(strcmp("DECL", root->type) == 0) {
-        char* name = root->left->value;
+        char* name = root->right->value;
+        char* type = root->left->value;
         if(lookup(name)) {
             printf("Semantic Error: Redeclaration of %s\n", name);
         } else {
-            insert(name);
+            insert(name, type);
         }
     }
 

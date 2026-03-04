@@ -59,7 +59,17 @@ extern int yydebug;
     DIV = 265,
     LPAREN = 266,
     RPAREN = 267,
-    INT = 268
+    EQ = 268,
+    NE = 269,
+    GE = 270,
+    LE = 271,
+    GT = 272,
+    LT = 273,
+    IF = 274,
+    WHILE = 275,
+    INT = 276,
+    FLOAT = 277,
+    CHAR = 278
   };
 #endif
 
@@ -67,12 +77,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 123 "parser.y"
+#line 137 "parser.y"
 
     ASTNode* node;
     char* str;
 
-#line 76 "parser.tab.h"
+#line 86 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

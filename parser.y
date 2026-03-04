@@ -102,7 +102,13 @@ char* generateTAC(ASTNode* node) {
     if(strcmp(node->type, "+") == 0 || 
        strcmp(node->type, "-") == 0 || 
        strcmp(node->type, "*") == 0 ||
-       strcmp(node->type, "/") == 0 ) {
+       strcmp(node->type, "/") == 0 || 
+       strcmp(node->type, ">") == 0 ||
+       strcmp(node->type, "<") == 0 ||
+       strcmp(node->type, ">=") == 0 ||
+       strcmp(node->type, "<=") == 0 ||
+       strcmp(node->type, "==") == 0 ||
+       strcmp(node->type, "!=") == 0 ) {
         
         char* left = generateTAC(node->left);
         char* right = generateTAC(node->right);
@@ -140,8 +146,12 @@ char* generateTAC(ASTNode* node) {
 %token PLUS MUL MINUS DIV
 %token LPAREN RPAREN
 
+%token EQ NE GE LE GT LT
+%token IF WHILE
+
 %token INT FLOAT CHAR
 
+%left EQ NE GE LE GT LT
 %left PLUS MINUS
 %left MUL DIV
 
@@ -173,6 +183,14 @@ E:
     | E MUL E { $$ = createNode("*", NULL, $1, $3); }
     | E MINUS E { $$ = createNode("-", NULL, $1, $3); }
     | E DIV E { $$ = createNode("/", NULL, $1, $3); }
+
+    | E GT E { $$ = createNode(">", NULL, $1, $3); }
+    | E LT E { $$ = createNode("<", NULL, $1, $3); }
+    | E GE E { $$ = createNode(">=", NULL, $1, $3); }
+    | E LE E { $$ = createNode("<=", NULL, $1, $3); }
+    | E EQ E { $$ = createNode("==", NULL, $1, $3); }
+    | E NE E { $$ = createNode("!=", NULL, $1, $3); }
+
     | LPAREN E RPAREN { $$ = $2; }
     | NUM { $$ = createNode("NUM", $1, NULL, NULL); }
     | ID { $$ = createNode("ID", $1, NULL, NULL); };
@@ -189,6 +207,11 @@ int main() {
 
     printf("--------------- Semantic Check ---------------\n");
     semanticCheck(root);
+
+    printf("--------------- Symbol Table ---------------\n");
+    for(int i = 0; i < symCount; i++) {
+        printf("%s : %s\n", symtab[i].name, symtab[i].type);
+    }
 
     printf("--------------- TAC ---------------\n");
     generateTAC(root); 

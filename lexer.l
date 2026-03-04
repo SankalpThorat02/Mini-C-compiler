@@ -8,6 +8,8 @@
 %%
 
 "int"                       { return INT; }
+"float"                     { return FLOAT; }
+"char"                      { return CHAR; }
 "if"                        { return IF; }
 "while"                     { return WHILE; }
 [0-9]+                      { yylval.str = strdup(yytext); return NUM; }

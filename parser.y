@@ -125,14 +125,14 @@ char* generateTAC(ASTNode* node) {
     char* str;
 }
 
-%type <node> E S program
+%type <node> E S program TYPE
 %token <str> NUM
 %token <str> ID
 %token ASSIGN SEMI
 %token PLUS MUL MINUS DIV
 %token LPAREN RPAREN
 
-%token INT
+%token INT FLOAT CHAR
 
 %left PLUS MINUS
 %left MUL DIV
@@ -145,10 +145,15 @@ program:
         root = $$;
       };
 
+TYPE:
+      INT { $$ = createNode("TYPE", "int", NULL, NULL); }
+    | FLOAT { $$ = createNode("TYPE", "float", NULL, NULL); }
+    | CHAR { $$ = createNode("TYPE", "char", NULL, NULL); };
+
 S:  
-    INT ID SEMI {  
+    TYPE ID SEMI {  
         ASTNode* idNode = createNode("ID", $2, NULL, NULL);
-        $$ = createNode("DECL", "int", idNode, NULL);
+        $$ = createNode("DECL", NULL, $1, idNode);
     }
     | ID ASSIGN E SEMI { 
         ASTNode* idNode = createNode("ID", $1, NULL, NULL);

@@ -241,6 +241,9 @@ char* generateStmtTAC(ASTNode* node) {
 %left PLUS MINUS
 %left MUL DIV
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
+
 %%
 program:
       /* empty */ { $$ = NULL; }
@@ -264,8 +267,12 @@ S:
         $$ = createNode("=", NULL, idNode, $3);
         
     }
-    | IF LPAREN E RPAREN S {
+    | IF LPAREN E RPAREN S %prec LOWER_THAN_ELSE {
         $$ = createNode("IF", NULL, $3, $5);
+    }
+    | IF LPAREN E RPAREN S ELSE S {
+        ASTNode* ifNode = createNode("IF", NULL, $3, $5);
+        $$ = createNode("IF-ELSE", NULL, ifNode, $7);
     };
 E:
       E PLUS E { $$ = createNode("+", NULL, $1, $3); }

@@ -23,9 +23,9 @@ ASTNode* root = NULL;
 int lookup(char* name) {
     for(int i = 0; i < symCount; i++){
         if(strcmp(symtab[i].name, name) == 0)
-            return 1;
+            return i;   
     }
-    return 0;
+    return -1;
 }
 
 void insert(char* name, char* type) {
@@ -40,6 +40,7 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
     node->type = strdup(type);
     node->value = value ? strdup(value) : NULL;
+    node->exprType = NULL;
     node->left = left;
     node->right = right;
 
@@ -49,25 +50,79 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
 void semanticCheck(ASTNode* root) {
     if(!root) return;
 
-    if(strcmp("DECL", root->type) == 0) {
+    if(strcmp(root->type, "DECL") == 0) {
         char* name = root->right->value;
         char* type = root->left->value;
-        if(lookup(name)) {
+
+        if(lookup(name) != -1) {
             printf("Semantic Error: Redeclaration of %s\n", name);
         } else {
             insert(name, type);
         }
-    }
-
-    if(strcmp("ID", root->type) == 0) {
-        char* name = root->value;
-        if(!lookup(name)) {
-            printf("Semantic Error: %s not declared\n", name);
-        }
+        
+        return;
     }
 
     semanticCheck(root->left);
     semanticCheck(root->right);
+
+    if(strcmp(root->type, "NUM") == 0) {
+        root->exprType = "int";
+    }
+    else if(strcmp(root->type, "ID") == 0) {
+        char* name = root->value;
+        int idx = lookup(name);
+
+        if(idx == -1) {
+            printf("Semantic Error: %s not declared\n", name);
+            root->exprType = "error";
+        } else {
+            root->exprType = symtab[idx].type;
+        }
+    }
+    else if(strcmp(root->type, "+") == 0 ||
+            strcmp(root->type, "-") == 0 ||
+            strcmp(root->type, "*") == 0 ||
+            strcmp(root->type, "/") == 0) {
+
+        if(root->left && root->right &&
+           root->left->exprType && root->right->exprType) {
+
+            if(strcmp(root->left->exprType, root->right->exprType) != 0) {
+                printf("Type mismatch in expression\n");
+            } else {
+                root->exprType = root->left->exprType;
+            }
+        }
+    }
+    else if(strcmp(root->type, ">") == 0 ||
+            strcmp(root->type, "<") == 0 ||
+            strcmp(root->type, ">=") == 0 ||
+            strcmp(root->type, "<=") == 0 ||
+            strcmp(root->type, "==") == 0 ||
+            strcmp(root->type, "!=") == 0) {
+
+        if(root->left && root->right &&
+           root->left->exprType && root->right->exprType) {
+
+            if(strcmp(root->left->exprType, root->right->exprType) != 0) {
+                printf("Type mismatch in expression\n");
+            }
+
+            root->exprType = "int";
+        }
+    }
+    else if(strcmp(root->type, "=") == 0) {
+        if(root->left && root->right) {
+            int idx = lookup(root->left->value);
+            if(idx != -1 && root->right->exprType) {
+                char* idType = symtab[idx].type;
+                if(strcmp(idType, root->right->exprType) != 0) {
+                    printf("Type mismatch in assignment\n");
+                }
+            }
+        }
+    }
 }
 
 void printAST(ASTNode* root, int depth){
@@ -147,7 +202,7 @@ char* generateTAC(ASTNode* node) {
 %token LPAREN RPAREN
 
 %token EQ NE GE LE GT LT
-%token IF WHILE
+%token IF ELSE WHILE
 
 %token INT FLOAT CHAR
 

@@ -92,9 +92,9 @@ ASTNode* root = NULL;
 int lookup(char* name) {
     for(int i = 0; i < symCount; i++){
         if(strcmp(symtab[i].name, name) == 0)
-            return 1;
+            return i;   
     }
-    return 0;
+    return -1;
 }
 
 void insert(char* name, char* type) {
@@ -109,6 +109,7 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
     node->type = strdup(type);
     node->value = value ? strdup(value) : NULL;
+    node->exprType = NULL;
     node->left = left;
     node->right = right;
 
@@ -118,25 +119,79 @@ ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
 void semanticCheck(ASTNode* root) {
     if(!root) return;
 
-    if(strcmp("DECL", root->type) == 0) {
+    if(strcmp(root->type, "DECL") == 0) {
         char* name = root->right->value;
         char* type = root->left->value;
-        if(lookup(name)) {
+
+        if(lookup(name) != -1) {
             printf("Semantic Error: Redeclaration of %s\n", name);
         } else {
             insert(name, type);
         }
-    }
-
-    if(strcmp("ID", root->type) == 0) {
-        char* name = root->value;
-        if(!lookup(name)) {
-            printf("Semantic Error: %s not declared\n", name);
-        }
+        
+        return;
     }
 
     semanticCheck(root->left);
     semanticCheck(root->right);
+
+    if(strcmp(root->type, "NUM") == 0) {
+        root->exprType = "int";
+    }
+    else if(strcmp(root->type, "ID") == 0) {
+        char* name = root->value;
+        int idx = lookup(name);
+
+        if(idx == -1) {
+            printf("Semantic Error: %s not declared\n", name);
+            root->exprType = "error";
+        } else {
+            root->exprType = symtab[idx].type;
+        }
+    }
+    else if(strcmp(root->type, "+") == 0 ||
+            strcmp(root->type, "-") == 0 ||
+            strcmp(root->type, "*") == 0 ||
+            strcmp(root->type, "/") == 0) {
+
+        if(root->left && root->right &&
+           root->left->exprType && root->right->exprType) {
+
+            if(strcmp(root->left->exprType, root->right->exprType) != 0) {
+                printf("Type mismatch in expression\n");
+            } else {
+                root->exprType = root->left->exprType;
+            }
+        }
+    }
+    else if(strcmp(root->type, ">") == 0 ||
+            strcmp(root->type, "<") == 0 ||
+            strcmp(root->type, ">=") == 0 ||
+            strcmp(root->type, "<=") == 0 ||
+            strcmp(root->type, "==") == 0 ||
+            strcmp(root->type, "!=") == 0) {
+
+        if(root->left && root->right &&
+           root->left->exprType && root->right->exprType) {
+
+            if(strcmp(root->left->exprType, root->right->exprType) != 0) {
+                printf("Type mismatch in expression\n");
+            }
+
+            root->exprType = "int";
+        }
+    }
+    else if(strcmp(root->type, "=") == 0) {
+        if(root->left && root->right) {
+            int idx = lookup(root->left->value);
+            if(idx != -1 && root->right->exprType) {
+                char* idType = symtab[idx].type;
+                if(strcmp(idType, root->right->exprType) != 0) {
+                    printf("Type mismatch in assignment\n");
+                }
+            }
+        }
+    }
 }
 
 void printAST(ASTNode* root, int depth){
@@ -202,7 +257,7 @@ char* generateTAC(ASTNode* node) {
 }
 
 
-#line 206 "parser.tab.c"
+#line 261 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -278,12 +333,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 137 "parser.y"
+#line 192 "parser.y"
 
     ASTNode* node;
     char* str;
 
-#line 287 "parser.tab.c"
+#line 342 "parser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -660,9 +715,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   160,   160,   161,   167,   168,   169,   172,   176,   182,
-     183,   184,   185,   187,   188,   189,   190,   191,   192,   194,
-     195,   196
+       0,   215,   215,   216,   222,   223,   224,   227,   231,   237,
+     238,   239,   240,   242,   243,   244,   245,   246,   247,   249,
+     250,   251
 };
 #endif
 
@@ -1474,137 +1529,137 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 160 "parser.y"
+#line 215 "parser.y"
                   { (yyval.node) = NULL; }
-#line 1480 "parser.tab.c"
+#line 1535 "parser.tab.c"
     break;
 
   case 3:
-#line 161 "parser.y"
+#line 216 "parser.y"
                 { 
         (yyval.node) = createNode("PROGRAM", NULL, (yyvsp[-1].node), (yyvsp[0].node)); 
         root = (yyval.node);
       }
-#line 1489 "parser.tab.c"
+#line 1544 "parser.tab.c"
     break;
 
   case 4:
-#line 167 "parser.y"
+#line 222 "parser.y"
           { (yyval.node) = createNode("TYPE", "int", NULL, NULL); }
-#line 1495 "parser.tab.c"
+#line 1550 "parser.tab.c"
     break;
 
   case 5:
-#line 168 "parser.y"
+#line 223 "parser.y"
             { (yyval.node) = createNode("TYPE", "float", NULL, NULL); }
-#line 1501 "parser.tab.c"
+#line 1556 "parser.tab.c"
     break;
 
   case 6:
-#line 169 "parser.y"
+#line 224 "parser.y"
            { (yyval.node) = createNode("TYPE", "char", NULL, NULL); }
-#line 1507 "parser.tab.c"
+#line 1562 "parser.tab.c"
     break;
 
   case 7:
-#line 172 "parser.y"
+#line 227 "parser.y"
                  {  
         ASTNode* idNode = createNode("ID", (yyvsp[-1].str), NULL, NULL);
         (yyval.node) = createNode("DECL", NULL, (yyvsp[-2].node), idNode);
     }
-#line 1516 "parser.tab.c"
+#line 1571 "parser.tab.c"
     break;
 
   case 8:
-#line 176 "parser.y"
+#line 231 "parser.y"
                        { 
         ASTNode* idNode = createNode("ID", (yyvsp[-3].str), NULL, NULL);
         (yyval.node) = createNode("=", NULL, idNode, (yyvsp[-1].node));
         
     }
-#line 1526 "parser.tab.c"
+#line 1581 "parser.tab.c"
     break;
 
   case 9:
-#line 182 "parser.y"
+#line 237 "parser.y"
                { (yyval.node) = createNode("+", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1532 "parser.tab.c"
+#line 1587 "parser.tab.c"
     break;
 
   case 10:
-#line 183 "parser.y"
+#line 238 "parser.y"
               { (yyval.node) = createNode("*", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1538 "parser.tab.c"
+#line 1593 "parser.tab.c"
     break;
 
   case 11:
-#line 184 "parser.y"
+#line 239 "parser.y"
                 { (yyval.node) = createNode("-", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1544 "parser.tab.c"
+#line 1599 "parser.tab.c"
     break;
 
   case 12:
-#line 185 "parser.y"
+#line 240 "parser.y"
               { (yyval.node) = createNode("/", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1550 "parser.tab.c"
+#line 1605 "parser.tab.c"
     break;
 
   case 13:
-#line 187 "parser.y"
+#line 242 "parser.y"
              { (yyval.node) = createNode(">", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1556 "parser.tab.c"
+#line 1611 "parser.tab.c"
     break;
 
   case 14:
-#line 188 "parser.y"
+#line 243 "parser.y"
              { (yyval.node) = createNode("<", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1562 "parser.tab.c"
+#line 1617 "parser.tab.c"
     break;
 
   case 15:
-#line 189 "parser.y"
+#line 244 "parser.y"
              { (yyval.node) = createNode(">=", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1568 "parser.tab.c"
+#line 1623 "parser.tab.c"
     break;
 
   case 16:
-#line 190 "parser.y"
+#line 245 "parser.y"
              { (yyval.node) = createNode("<=", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1574 "parser.tab.c"
+#line 1629 "parser.tab.c"
     break;
 
   case 17:
-#line 191 "parser.y"
+#line 246 "parser.y"
              { (yyval.node) = createNode("==", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1580 "parser.tab.c"
+#line 1635 "parser.tab.c"
     break;
 
   case 18:
-#line 192 "parser.y"
+#line 247 "parser.y"
              { (yyval.node) = createNode("!=", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1586 "parser.tab.c"
+#line 1641 "parser.tab.c"
     break;
 
   case 19:
-#line 194 "parser.y"
+#line 249 "parser.y"
                       { (yyval.node) = (yyvsp[-1].node); }
-#line 1592 "parser.tab.c"
+#line 1647 "parser.tab.c"
     break;
 
   case 20:
-#line 195 "parser.y"
+#line 250 "parser.y"
           { (yyval.node) = createNode("NUM", (yyvsp[0].str), NULL, NULL); }
-#line 1598 "parser.tab.c"
+#line 1653 "parser.tab.c"
     break;
 
   case 21:
-#line 196 "parser.y"
+#line 251 "parser.y"
          { (yyval.node) = createNode("ID", (yyvsp[0].str), NULL, NULL); }
-#line 1604 "parser.tab.c"
+#line 1659 "parser.tab.c"
     break;
 
 
-#line 1608 "parser.tab.c"
+#line 1663 "parser.tab.c"
 
       default: break;
     }
@@ -1836,7 +1891,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 197 "parser.y"
+#line 252 "parser.y"
 
 
 void yyerror(const char *s){

@@ -18,6 +18,7 @@ Symbol symtab[MAX];
 int symCount = 0;
 
 int tempCount = 1;
+int labelCount = 1;
 ASTNode* root = NULL;
 
 int lookup(char* name) {
@@ -123,6 +124,11 @@ void semanticCheck(ASTNode* root) {
             }
         }
     }
+    else if(strcmp(root->type, "IF") == 0) {
+        if(root->left && root->left->exprType && strcmp(root->left->exprType, "int") != 0) {
+            printf("Condition must evaluate to true or false\n");
+        }
+    }
 }
 
 void printAST(ASTNode* root, int depth){
@@ -144,6 +150,12 @@ void printAST(ASTNode* root, int depth){
 char* newTemp() {
     char buffer[10];
     sprintf(buffer, "t%d", tempCount++);
+    return strdup(buffer);
+}
+
+char* newLabel() {
+    char buffer[10];
+    sprintf(buffer, "L%d", labelCount++);
     return strdup(buffer);
 }
 
@@ -179,6 +191,18 @@ char* generateTAC(ASTNode* node) {
         printf("%s = %s\n", node->left->value, right);
         
         return node->left->value;
+    }
+
+    if(strcmp(node->type, "IF") == 0) {
+        char* condTemp = generateTAC(node->left);
+        char* label = newLabel();
+
+        printf("if FALSE %s goto %s\n", condTemp, label);
+        generateTAC(node->right);
+
+        printf("%s:\n", label);
+
+        return NULL;
     }
 
     generateTAC(node->left);
@@ -232,6 +256,9 @@ S:
         ASTNode* idNode = createNode("ID", $1, NULL, NULL);
         $$ = createNode("=", NULL, idNode, $3);
         
+    }
+    | IF LPAREN E RPAREN S {
+        $$ = createNode("IF", NULL, $3, $5);
     };
 E:
       E PLUS E { $$ = createNode("+", NULL, $1, $3); }

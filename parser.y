@@ -159,7 +159,7 @@ char* newLabel() {
     return strdup(buffer);
 }
 
-char* generateTAC(ASTNode* node) {
+char* generateExprTAC(ASTNode* node) {
     if(!node) return NULL;
 
     if(strcmp(node->type, "ID") == 0 || strcmp(node->type, "NUM") == 0) {
@@ -177,8 +177,8 @@ char* generateTAC(ASTNode* node) {
        strcmp(node->type, "==") == 0 ||
        strcmp(node->type, "!=") == 0 ) {
         
-        char* left = generateTAC(node->left);
-        char* right = generateTAC(node->right);
+        char* left = generateExprTAC(node->left);
+        char* right = generateExprTAC(node->right);
 
         char* temp = newTemp();
         printf("%s = %s %s %s\n", temp, left, node->type, right);
@@ -186,27 +186,34 @@ char* generateTAC(ASTNode* node) {
         return temp;
     }
 
+    return NULL;
+}
+
+char* generateStmtTAC(ASTNode* node) {
+    if(!node) 
+        return NULL;
+
     if(strcmp(node->type, "=") == 0) {
-        char* right = generateTAC(node->right);
+        char* right = generateExprTAC(node->right);
         printf("%s = %s\n", node->left->value, right);
         
         return node->left->value;
     }
 
-    if(strcmp(node->type, "IF") == 0) {
-        char* condTemp = generateTAC(node->left);
+    else if(strcmp(node->type, "IF") == 0) {
+        char* condTemp = generateExprTAC(node->left);
         char* label = newLabel();
 
-        printf("if FALSE %s goto %s\n", condTemp, label);
-        generateTAC(node->right);
+        printf("ifFalse %s goto %s\n", condTemp, label);
+        generateStmtTAC(node->right);
 
         printf("%s:\n", label);
 
         return NULL;
     }
 
-    generateTAC(node->left);
-    generateTAC(node->right);
+    generateStmtTAC(node->left);
+    generateStmtTAC(node->right);
 
     return NULL;
 }
@@ -296,7 +303,7 @@ int main() {
     }
 
     printf("--------------- TAC ---------------\n");
-    generateTAC(root); 
+    generateStmtTAC(root); 
 
     return 0;
 }

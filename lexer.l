@@ -32,7 +32,8 @@
 
 "("                         { return LPAREN; }
 ")"                         { return RPAREN; }
-
+"{"                         { return LBRACE; }
+"}"                         { return RBRACE; }
 [ \t\n]                     ;
 .                           {printf("Lexical Error: %s\n", yytext);}
 

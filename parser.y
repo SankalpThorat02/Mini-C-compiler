@@ -238,7 +238,6 @@ char* generateStmtTAC(ASTNode* node) {
         char* startLabel = newLabel();
         char* endLabel = newLabel();
 
-        
         printf("%s:\n", startLabel);
         char* condTemp = generateExprTAC(node->left);
         printf("ifFalse %s goto %s\n", condTemp, endLabel);
@@ -248,6 +247,11 @@ char* generateStmtTAC(ASTNode* node) {
         printf("goto %s\n", startLabel);
         printf("%s:\n", endLabel);
 
+        return NULL;
+    }
+
+    else if(strcmp(node->type, "BLOCK") == 0) {
+        generateStmtTAC(node->left);
         return NULL;
     }
 
@@ -269,7 +273,7 @@ char* generateStmtTAC(ASTNode* node) {
 %token <str> ID
 %token ASSIGN SEMI
 %token PLUS MUL MINUS DIV
-%token LPAREN RPAREN
+%token LPAREN RPAREN LBRACE RBRACE
 
 %token EQ NE GE LE GT LT
 %token IF ELSE WHILE
@@ -304,7 +308,6 @@ S:
     | ID ASSIGN E SEMI { 
         ASTNode* idNode = createNode("ID", $1, NULL, NULL);
         $$ = createNode("=", NULL, idNode, $3);
-        
     }
     | IF LPAREN E RPAREN S %prec LOWER_THAN_ELSE {
         $$ = createNode("IF", NULL, $3, $5);
@@ -315,6 +318,9 @@ S:
     }
     | WHILE LPAREN E RPAREN S {
         $$ = createNode("WHILE", NULL, $3, $5);
+    }
+    | LBRACE program RBRACE {
+        $$ = createNode("BLOCK", NULL, $2, NULL);
     };
 E:
       E PLUS E { $$ = createNode("+", NULL, $1, $3); }

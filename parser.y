@@ -234,6 +234,23 @@ char* generateStmtTAC(ASTNode* node) {
         return NULL;
     }
 
+    else if(strcmp(node->type, "WHILE") == 0) {
+        char* startLabel = newLabel();
+        char* endLabel = newLabel();
+
+        
+        printf("%s:\n", startLabel);
+        char* condTemp = generateExprTAC(node->left);
+        printf("ifFalse %s goto %s\n", condTemp, endLabel);
+
+        generateStmtTAC(node->right);
+
+        printf("goto %s\n", startLabel);
+        printf("%s:\n", endLabel);
+
+        return NULL;
+    }
+
     generateStmtTAC(node->left);
     generateStmtTAC(node->right);
 
@@ -295,6 +312,9 @@ S:
     | IF LPAREN E RPAREN S ELSE S {
         ASTNode* ifNode = createNode("IF", NULL, $3, $5);
         $$ = createNode("IF-ELSE", NULL, ifNode, $7);
+    }
+    | WHILE LPAREN E RPAREN S {
+        $$ = createNode("WHILE", NULL, $3, $5);
     };
 E:
       E PLUS E { $$ = createNode("+", NULL, $1, $3); }

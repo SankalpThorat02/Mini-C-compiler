@@ -79,7 +79,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 245 "parser.y"
+#line 262 "parser.y"
 
     ASTNode* node;
     char* str;

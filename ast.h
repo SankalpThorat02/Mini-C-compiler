@@ -10,5 +10,6 @@ typedef struct ASTNode {
 } ASTNode;
 
 ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right);
+void printAST(ASTNode* root, int depth);
 
 #endif

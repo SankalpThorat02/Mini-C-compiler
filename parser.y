@@ -211,6 +211,28 @@ char* generateStmtTAC(ASTNode* node) {
 
         return NULL;
     }
+    
+    else if(strcmp(node->type, "IF-ELSE") == 0) {
+        ASTNode* ifNode = node->left;
+        ASTNode* elseStmt = node->right;
+
+        char* condTemp = generateExprTAC(ifNode->left);
+
+        char* label1 = newLabel();
+        char* label2 = newLabel();
+
+        printf("ifFalse %s goto %s\n", condTemp, label1);
+
+        generateStmtTAC(ifNode->right);
+        printf("goto %s\n", label2);
+
+        printf("%s:\n", label1);
+        generateStmtTAC(elseStmt);
+
+        printf("%s:\n", label2);
+
+        return NULL;
+    }
 
     generateStmtTAC(node->left);
     generateStmtTAC(node->right);

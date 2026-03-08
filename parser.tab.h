@@ -70,7 +70,8 @@ extern int yydebug;
     WHILE = 276,
     INT = 277,
     FLOAT = 278,
-    CHAR = 279
+    CHAR = 279,
+    LOWER_THAN_ELSE = 280
   };
 #endif
 
@@ -78,12 +79,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 223 "parser.y"
+#line 245 "parser.y"
 
     ASTNode* node;
     char* str;
 
-#line 87 "parser.tab.h"
+#line 88 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

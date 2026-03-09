@@ -80,126 +80,10 @@
 void yyerror(const char *s);
 int yylex();
 
-// int tempCount = 1;
-// int labelCount = 1;
 ASTNode* root = NULL;
 
-// char* newTemp() {
-//     char buffer[10];
-//     sprintf(buffer, "t%d", tempCount++);
-//     return strdup(buffer);
-// }
 
-// char* newLabel() {
-//     char buffer[10];
-//     sprintf(buffer, "L%d", labelCount++);
-//     return strdup(buffer);
-// }
-
-// char* generateExprTAC(ASTNode* node) {
-//     if(!node) return NULL;
-
-//     if(strcmp(node->type, "ID") == 0 || strcmp(node->type, "NUM") == 0) {
-//         return node->value;
-//     }
-
-//     if(strcmp(node->type, "+") == 0 || 
-//        strcmp(node->type, "-") == 0 || 
-//        strcmp(node->type, "*") == 0 ||
-//        strcmp(node->type, "/") == 0 || 
-//        strcmp(node->type, ">") == 0 ||
-//        strcmp(node->type, "<") == 0 ||
-//        strcmp(node->type, ">=") == 0 ||
-//        strcmp(node->type, "<=") == 0 ||
-//        strcmp(node->type, "==") == 0 ||
-//        strcmp(node->type, "!=") == 0 ) {
-        
-//         char* left = generateExprTAC(node->left);
-//         char* right = generateExprTAC(node->right);
-
-//         char* temp = newTemp();
-//         printf("%s = %s %s %s\n", temp, left, node->type, right);
-
-//         return temp;
-//     }
-
-//     return NULL;
-// }
-
-// char* generateStmtTAC(ASTNode* node) {
-//     if(!node) 
-//         return NULL;
-
-//     if(strcmp(node->type, "=") == 0) {
-//         char* right = generateExprTAC(node->right);
-//         printf("%s = %s\n", node->left->value, right);
-        
-//         return node->left->value;
-//     }
-
-//     else if(strcmp(node->type, "IF") == 0) {
-//         char* condTemp = generateExprTAC(node->left);
-//         char* label = newLabel();
-
-//         printf("ifFalse %s goto %s\n", condTemp, label);
-//         generateStmtTAC(node->right);
-
-//         printf("%s:\n", label);
-
-//         return NULL;
-//     }
-    
-//     else if(strcmp(node->type, "IF-ELSE") == 0) {
-//         ASTNode* ifNode = node->left;
-//         ASTNode* elseStmt = node->right;
-
-//         char* condTemp = generateExprTAC(ifNode->left);
-
-//         char* label1 = newLabel();
-//         char* label2 = newLabel();
-
-//         printf("ifFalse %s goto %s\n", condTemp, label1);
-
-//         generateStmtTAC(ifNode->right);
-//         printf("goto %s\n", label2);
-
-//         printf("%s:\n", label1);
-//         generateStmtTAC(elseStmt);
-
-//         printf("%s:\n", label2);
-
-//         return NULL;
-//     }
-
-//     else if(strcmp(node->type, "WHILE") == 0) {
-//         char* startLabel = newLabel();
-//         char* endLabel = newLabel();
-
-//         printf("%s:\n", startLabel);
-//         char* condTemp = generateExprTAC(node->left);
-//         printf("ifFalse %s goto %s\n", condTemp, endLabel);
-
-//         generateStmtTAC(node->right);
-
-//         printf("goto %s\n", startLabel);
-//         printf("%s:\n", endLabel);
-
-//         return NULL;
-//     }
-
-//     else if(strcmp(node->type, "BLOCK") == 0) {
-//         generateStmtTAC(node->left);
-//         return NULL;
-//     }
-
-//     generateStmtTAC(node->left);
-//     generateStmtTAC(node->right);
-
-//     return NULL;
-// }
-
-
-#line 203 "parser.tab.c"
+#line 87 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -279,12 +163,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 134 "parser.y"
+#line 18 "parser.y"
 
     ASTNode* node;
     char* str;
 
-#line 288 "parser.tab.c"
+#line 172 "parser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -660,11 +544,11 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int8 yyrline[] =
 {
-       0,   160,   160,   161,   167,   168,   169,   172,   176,   180,
-     183,   187,   190,   194,   195,   196,   197,   199,   200,   201,
-     202,   203,   204,   206,   207,   208
+       0,    44,    44,    45,    51,    52,    53,    56,    60,    64,
+      67,    71,    74,    78,    79,    80,    81,    83,    84,    85,
+      86,    87,    88,    90,    91,    92
 };
 #endif
 
@@ -1496,169 +1380,169 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 160 "parser.y"
+#line 44 "parser.y"
                   { (yyval.node) = NULL; }
-#line 1502 "parser.tab.c"
+#line 1386 "parser.tab.c"
     break;
 
   case 3:
-#line 161 "parser.y"
+#line 45 "parser.y"
                 { 
         (yyval.node) = createNode("PROGRAM", NULL, (yyvsp[-1].node), (yyvsp[0].node)); 
         root = (yyval.node);
       }
-#line 1511 "parser.tab.c"
+#line 1395 "parser.tab.c"
     break;
 
   case 4:
-#line 167 "parser.y"
+#line 51 "parser.y"
           { (yyval.node) = createNode("TYPE", "int", NULL, NULL); }
-#line 1517 "parser.tab.c"
+#line 1401 "parser.tab.c"
     break;
 
   case 5:
-#line 168 "parser.y"
+#line 52 "parser.y"
             { (yyval.node) = createNode("TYPE", "float", NULL, NULL); }
-#line 1523 "parser.tab.c"
+#line 1407 "parser.tab.c"
     break;
 
   case 6:
-#line 169 "parser.y"
+#line 53 "parser.y"
            { (yyval.node) = createNode("TYPE", "char", NULL, NULL); }
-#line 1529 "parser.tab.c"
+#line 1413 "parser.tab.c"
     break;
 
   case 7:
-#line 172 "parser.y"
+#line 56 "parser.y"
                  {  
         ASTNode* idNode = createNode("ID", (yyvsp[-1].str), NULL, NULL);
         (yyval.node) = createNode("DECL", NULL, (yyvsp[-2].node), idNode);
     }
-#line 1538 "parser.tab.c"
+#line 1422 "parser.tab.c"
     break;
 
   case 8:
-#line 176 "parser.y"
+#line 60 "parser.y"
                        { 
         ASTNode* idNode = createNode("ID", (yyvsp[-3].str), NULL, NULL);
         (yyval.node) = createNode("=", NULL, idNode, (yyvsp[-1].node));
     }
-#line 1547 "parser.tab.c"
+#line 1431 "parser.tab.c"
     break;
 
   case 9:
-#line 180 "parser.y"
+#line 64 "parser.y"
                                                  {
         (yyval.node) = createNode("IF", NULL, (yyvsp[-2].node), (yyvsp[0].node));
     }
-#line 1555 "parser.tab.c"
+#line 1439 "parser.tab.c"
     break;
 
   case 10:
-#line 183 "parser.y"
+#line 67 "parser.y"
                                   {
         ASTNode* ifNode = createNode("IF", NULL, (yyvsp[-4].node), (yyvsp[-2].node));
         (yyval.node) = createNode("IF-ELSE", NULL, ifNode, (yyvsp[0].node));
     }
-#line 1564 "parser.tab.c"
+#line 1448 "parser.tab.c"
     break;
 
   case 11:
-#line 187 "parser.y"
+#line 71 "parser.y"
                               {
         (yyval.node) = createNode("WHILE", NULL, (yyvsp[-2].node), (yyvsp[0].node));
     }
-#line 1572 "parser.tab.c"
+#line 1456 "parser.tab.c"
     break;
 
   case 12:
-#line 190 "parser.y"
+#line 74 "parser.y"
                             {
         (yyval.node) = createNode("BLOCK", NULL, (yyvsp[-1].node), NULL);
     }
-#line 1580 "parser.tab.c"
+#line 1464 "parser.tab.c"
     break;
 
   case 13:
-#line 194 "parser.y"
+#line 78 "parser.y"
                { (yyval.node) = createNode("+", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1586 "parser.tab.c"
+#line 1470 "parser.tab.c"
     break;
 
   case 14:
-#line 195 "parser.y"
+#line 79 "parser.y"
               { (yyval.node) = createNode("*", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1592 "parser.tab.c"
+#line 1476 "parser.tab.c"
     break;
 
   case 15:
-#line 196 "parser.y"
+#line 80 "parser.y"
                 { (yyval.node) = createNode("-", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1598 "parser.tab.c"
+#line 1482 "parser.tab.c"
     break;
 
   case 16:
-#line 197 "parser.y"
+#line 81 "parser.y"
               { (yyval.node) = createNode("/", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1604 "parser.tab.c"
+#line 1488 "parser.tab.c"
     break;
 
   case 17:
-#line 199 "parser.y"
+#line 83 "parser.y"
              { (yyval.node) = createNode(">", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1610 "parser.tab.c"
+#line 1494 "parser.tab.c"
     break;
 
   case 18:
-#line 200 "parser.y"
+#line 84 "parser.y"
              { (yyval.node) = createNode("<", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1616 "parser.tab.c"
+#line 1500 "parser.tab.c"
     break;
 
   case 19:
-#line 201 "parser.y"
+#line 85 "parser.y"
              { (yyval.node) = createNode(">=", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1622 "parser.tab.c"
+#line 1506 "parser.tab.c"
     break;
 
   case 20:
-#line 202 "parser.y"
+#line 86 "parser.y"
              { (yyval.node) = createNode("<=", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1628 "parser.tab.c"
+#line 1512 "parser.tab.c"
     break;
 
   case 21:
-#line 203 "parser.y"
+#line 87 "parser.y"
              { (yyval.node) = createNode("==", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1634 "parser.tab.c"
+#line 1518 "parser.tab.c"
     break;
 
   case 22:
-#line 204 "parser.y"
+#line 88 "parser.y"
              { (yyval.node) = createNode("!=", NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1640 "parser.tab.c"
+#line 1524 "parser.tab.c"
     break;
 
   case 23:
-#line 206 "parser.y"
+#line 90 "parser.y"
                       { (yyval.node) = (yyvsp[-1].node); }
-#line 1646 "parser.tab.c"
+#line 1530 "parser.tab.c"
     break;
 
   case 24:
-#line 207 "parser.y"
+#line 91 "parser.y"
           { (yyval.node) = createNode("NUM", (yyvsp[0].str), NULL, NULL); }
-#line 1652 "parser.tab.c"
+#line 1536 "parser.tab.c"
     break;
 
   case 25:
-#line 208 "parser.y"
+#line 92 "parser.y"
          { (yyval.node) = createNode("ID", (yyvsp[0].str), NULL, NULL); }
-#line 1658 "parser.tab.c"
+#line 1542 "parser.tab.c"
     break;
 
 
-#line 1662 "parser.tab.c"
+#line 1546 "parser.tab.c"
 
       default: break;
     }
@@ -1890,25 +1774,9 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 209 "parser.y"
+#line 93 "parser.y"
 
 
 void yyerror(const char *s){
     printf("Syntax Error: %s\n", s);
-}
-
-int main() {
-    yyparse();
-    printf("--------------- AST ----------------\n");
-    printAST(root, 0);
-
-    printf("--------------- Semantic Check ---------------\n");
-    semanticCheck(root);
-
-    printSymbolTable();
-
-    printf("--------------- TAC ---------------\n");
-    generateStmtTAC(root); 
-
-    return 0;
 }

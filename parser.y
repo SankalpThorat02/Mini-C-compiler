@@ -95,19 +95,3 @@ E:
 void yyerror(const char *s){
     printf("Syntax Error: %s\n", s);
 }
-
-int main() {
-    yyparse();
-    printf("--------------- AST ----------------\n");
-    printAST(root, 0);
-
-    printf("--------------- Semantic Check ---------------\n");
-    semanticCheck(root);
-
-    printSymbolTable();
-
-    printf("--------------- TAC ---------------\n");
-    generateStmtTAC(root); 
-
-    return 0;
-}

@@ -6,13 +6,16 @@
 typedef struct {
     char* name;
     char* type;
+    int scope;
 } Symbol;
 
 Symbol symtab[MAX];
 
 void insert(char* name, char* type);
 int lookup(char* name);
+int lookupCurrentScope(char* name);
 void printSymbolTable();
-
+void enterScope();
+void exitScope();
 
 #endif

@@ -8,15 +8,23 @@ void semanticCheck(ASTNode* root) {
     if(!root) return;
 
     if(strcmp(root->type, "DECL") == 0) {
-        char* name = root->right->value;
         char* type = root->left->value;
+        char* name = root->right->value;
 
-        if(lookup(name) != -1) {
+        if(lookupCurrentScope(name) != -1) {
             printf("Semantic Error: Redeclaration of %s\n", name);
         } else {
             insert(name, type);
         }
         
+        return;
+    }
+    
+    else if(strcmp(root->type, "BLOCK") == 0) {
+        enterScope();
+        semanticCheck(root->left);
+        exitScope();
+
         return;
     }
 
@@ -85,4 +93,5 @@ void semanticCheck(ASTNode* root) {
             printf("Condition must evaluate to true or false\n");
         }
     }
+
 }

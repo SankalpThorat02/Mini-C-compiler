@@ -1,33 +1,21 @@
 --------------- AST ----------------
 PROGRAM
   PROGRAM
+    DECL
+      TYPE (int)
+      ID (a)
+  BLOCK
     PROGRAM
-      DECL
-        TYPE (int)
-        ID (a)
-    =
-      ID (a)
-      NUM (5)
-  WHILE
-    >
-      ID (a)
-      NUM (0)
-    BLOCK
       PROGRAM
-        =
-          ID (a)
-          -
+        DECL
+          TYPE (int)
+          ID (b)
+      BLOCK
+        PROGRAM
+          DECL
+            TYPE (int)
             ID (a)
-            NUM (1)
 --------------- Semantic Check ---------------
 --------------- Symbol Table ---------------
 a : int
 --------------- TAC ---------------
-a = 5
-L0:
-t0 = a > 0
-ifFalse t0 goto L1
-t1 = a - 1
-a = t1
-goto L0
-L1:

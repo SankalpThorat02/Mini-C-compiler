@@ -20,10 +20,44 @@ ASTNode* constantFold(ASTNode* node) {
         else if(strcmp(node->type, "*") == 0) result = a * b;
         else if(strcmp(node->type, "/") == 0) result = a / b;
 
+        else if(strcmp(node->type, ">") == 0) result = a > b;
+        else if(strcmp(node->type, "<") == 0) result = a < b;
+        else if(strcmp(node->type, ">=") == 0) result = a >= b;
+        else if(strcmp(node->type, "<=") == 0) result = a <= b;
+        else if(strcmp(node->type, "==") == 0) result = a == b;
+        else if(strcmp(node->type, "!=") == 0) result = a != b;
+
         char temp[10];
         sprintf(temp, "%d", result);
 
         return createNode("NUM", temp, NULL, NULL);
+    }
+
+    return node;
+}
+
+ASTNode* deadCodeElimination(ASTNode* node) {
+    if(!node)
+        return NULL;
+
+    node->left = deadCodeElimination(node->left);
+    node->right = deadCodeElimination(node->right);
+
+    if(strcmp(node->type, "IF") == 0) {
+        if(node->left && strcmp(node->left->type, "NUM") == 0) {
+            int condition = atoi(node->left->value);
+
+            if(condition == 0) return NULL;
+            else return node->right;
+        }
+    }   
+
+    if(strcmp(node->type, "WHILE") == 0) {
+        if(node->left && strcmp(node->left->type, "NUM") == 0) {
+            int condition = atoi(node->left->value);
+
+            if(condition == 0) return NULL; 
+        }
     }
 
     return node;

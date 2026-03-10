@@ -4,5 +4,6 @@
 #include "ast.h"
 
 ASTNode* constantFold(ASTNode* node);
+ASTNode* deadCodeElimination(ASTNode* node);
 
 #endif

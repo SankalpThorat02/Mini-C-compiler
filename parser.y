@@ -28,7 +28,7 @@ ASTNode* root = NULL;
 %token LPAREN RPAREN LBRACE RBRACE
 
 %token EQ NE GE LE GT LT
-%token IF ELSE WHILE
+%token IF ELSE WHILE FOR
 
 %token INT FLOAT CHAR
 

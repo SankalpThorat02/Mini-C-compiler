@@ -1,21 +1,22 @@
 --------------- AST ----------------
 PROGRAM
   PROGRAM
-    DECL
-      TYPE (int)
-      ID (a)
-  BLOCK
     PROGRAM
-      PROGRAM
-        DECL
-          TYPE (int)
-          ID (b)
-      BLOCK
-        PROGRAM
-          DECL
-            TYPE (int)
-            ID (a)
+      DECL
+        TYPE (int)
+        ID (a)
+    =
+      ID (a)
+      NUM (5)
+  =
+    ID (a)
+    +
+      ID (a)
+      NUM (1)
 --------------- Semantic Check ---------------
 --------------- Symbol Table ---------------
 a : int
 --------------- TAC ---------------
+a = 5
+t0 = a + 1
+a = t0

@@ -5,18 +5,24 @@ PROGRAM
       DECL
         TYPE (int)
         ID (a)
-    =
-      ID (a)
-      NUM (5)
+    DECL
+      TYPE (int)
+      ID (b)
   =
     ID (a)
-    +
-      ID (a)
-      NUM (1)
+    *
+      +
+        NUM (2)
+        NUM (3)
+      ID (b)
 --------------- Semantic Check ---------------
 --------------- Symbol Table ---------------
 a : int
+b : int
 --------------- TAC ---------------
-a = 5
-t0 = a + 1
-a = t0
+t1 = 2 + 3
+t2 = t1 * b
+a = t2
+--------------- Optimized TAC ---------------
+t3 = 5 * b
+a = t3

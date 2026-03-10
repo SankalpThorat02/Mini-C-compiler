@@ -6,6 +6,7 @@
 #include "symTab.h"
 #include "semantic.h"
 #include "tac.h"
+#include "optimizer.h"
 
 int yyparse();
 extern ASTNode* root;
@@ -22,6 +23,10 @@ int main() {
 
     printf("--------------- TAC ---------------\n");
     generateStmtTAC(root); 
+
+    printf("--------------- Optimized TAC ---------------\n");
+    root = constantFold(root);
+    generateStmtTAC(root);
 
     return 0;
 }   

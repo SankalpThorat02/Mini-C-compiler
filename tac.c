@@ -4,8 +4,8 @@
 
 #include "tac.h"
 
-int tempCount = 0;
-int labelCount = 0;
+int tempCount = 1;
+int labelCount = 1;
 
 char* newTemp() {
     char buffer[10];

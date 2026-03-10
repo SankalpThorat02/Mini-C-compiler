@@ -62,3 +62,50 @@ ASTNode* deadCodeElimination(ASTNode* node) {
 
     return node;
 }
+
+ASTNode* algebraicSimplification(ASTNode* node) {
+    if(!node)
+        return NULL;
+
+    node->left = algebraicSimplification(node->left);
+    node->right = algebraicSimplification(node->right);
+
+    if(strcmp(node->type, "+") == 0) {
+        if(node->right && strcmp(node->right->type, "NUM") == 0 && atoi(node->right->value) == 0) {
+            return node->left;
+        }
+        if(node->left && strcmp(node->left->type, "NUM") == 0 && atoi(node->left->value) == 0) {
+            return node->right;
+        } 
+    }
+
+    if(strcmp(node->type, "-") == 0) {
+        if(node->right && strcmp(node->right->type, "NUM") == 0 && atoi(node->right->value) == 0) {
+            return node->left;
+        }
+    }
+
+    if(strcmp(node->type, "*") == 0) {
+        if(node->right && strcmp(node->right->type, "NUM") == 0 && atoi(node->right->value) == 1) {
+            return node->left;
+        }
+        if(node->left && strcmp(node->left->type, "NUM") == 0 && atoi(node->left->value) == 1) {
+            return node->right;
+        } 
+
+        if(node->right && strcmp(node->right->type, "NUM") == 0 && atoi(node->right->value) == 0) {
+            return createNode("NUM", "0", NULL, NULL);
+        }
+        if(node->left && strcmp(node->left->type, "NUM") == 0 && atoi(node->left->value) == 0) {
+            return createNode("NUM", "0", NULL, NULL);
+        } 
+    }
+
+    if(strcmp(node->type, "/") == 0) {
+        if(node->right && strcmp(node->right->type, "NUM") == 0 && atoi(node->right->value) == 1) {
+            return node->left;
+        }
+    }
+
+    return node;
+}

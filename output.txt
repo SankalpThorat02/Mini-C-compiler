@@ -5,23 +5,20 @@ PROGRAM
       DECL
         TYPE (int)
         ID (a)
-    IF
-      NUM (0)
-      BLOCK
-        PROGRAM
-          =
-            ID (a)
-            NUM (5)
+    DECL
+      TYPE (int)
+      ID (b)
   =
     ID (a)
-    NUM (10)
+    *
+      ID (b)
+      NUM (0)
 --------------- Semantic Check ---------------
 --------------- Symbol Table ---------------
 a : int
+b : int
 --------------- TAC ---------------
-ifFalse 0 goto L1
-a = 5
-L1:
-a = 10
+t1 = b * 0
+a = t1
 --------------- Optimized TAC ---------------
-a = 10
+a = 0

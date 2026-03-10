@@ -27,6 +27,7 @@ int main() {
     printf("--------------- Optimized TAC ---------------\n");
     root = constantFold(root);
     root = deadCodeElimination(root);
+    root = algebraicSimplification(root);
     generateStmtTAC(root);
 
     return 0;

@@ -4,7 +4,7 @@
     {
       "label": "build compiler",
       "type": "shell",
-      "command": "flex lexer.l && bison -d parser.y && gcc lex.yy.c parser.tab.c ast.c symTab.c semantic.c tac.c optimizer.c main.c -o compiler"
+      "command": "flex lexer.l && bison -d parser.y && gcc lex.yy.c parser.tab.c ast.c symTab.c semantic.c tac.c optimizer.c targetcode.c main.c -o compiler"
     },
     {
       "label": "run compiler",

@@ -10,6 +10,7 @@ typedef struct {
 } Symbol;
 
 Symbol symtab[MAX];
+extern int symCount;
 
 void insert(char* name, char* type);
 int lookup(char* name);

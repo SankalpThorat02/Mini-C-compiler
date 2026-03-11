@@ -7,6 +7,7 @@
 #include "semantic.h"
 #include "tac.h"
 #include "optimizer.h"
+#include "targetcode.h"
 
 int yyparse();
 extern ASTNode* root;
@@ -27,6 +28,9 @@ int main() {
     printf("--------------- Optimized TAC ---------------\n");
     root = runOptimizer(root);
     generateStmtTAC(root);
+
+    printf("--------------- RISC V ---------------\n");
+    generateDataSection();
 
     return 0;
 }   

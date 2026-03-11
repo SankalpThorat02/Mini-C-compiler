@@ -4,19 +4,17 @@ PROGRAM
     DECL
       TYPE (int)
       ID (a)
-  =
-    ID (a)
-    +
-      *
-        NUM (2)
-        NUM (3)
-      NUM (0)
+  DECL
+    TYPE (int)
+    ID (b)
 --------------- Semantic Check ---------------
 --------------- Symbol Table ---------------
 a : int
+b : int
 --------------- TAC ---------------
-t1 = 2 * 3
-t2 = t1 + 0
-a = t2
 --------------- Optimized TAC ---------------
-a = 6
+--------------- RISC V ---------------
+.data:
+a: .word 0
+b: .word 0
+

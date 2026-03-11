@@ -7,4 +7,6 @@ ASTNode* constantFold(ASTNode* node);
 ASTNode* deadCodeElimination(ASTNode* node);
 ASTNode* algebraicSimplification(ASTNode* node);
 
+ASTNode* runOptimizer(ASTNode* node);
+
 #endif

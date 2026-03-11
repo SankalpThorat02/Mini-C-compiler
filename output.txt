@@ -1,24 +1,22 @@
 --------------- AST ----------------
 PROGRAM
   PROGRAM
-    PROGRAM
-      DECL
-        TYPE (int)
-        ID (a)
     DECL
       TYPE (int)
-      ID (b)
+      ID (a)
   =
     ID (a)
-    *
-      ID (b)
+    +
+      *
+        NUM (2)
+        NUM (3)
       NUM (0)
 --------------- Semantic Check ---------------
 --------------- Symbol Table ---------------
 a : int
-b : int
 --------------- TAC ---------------
-t1 = b * 0
-a = t1
+t1 = 2 * 3
+t2 = t1 + 0
+a = t2
 --------------- Optimized TAC ---------------
-a = 0
+a = 6

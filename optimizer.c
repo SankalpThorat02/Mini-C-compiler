@@ -109,3 +109,11 @@ ASTNode* algebraicSimplification(ASTNode* node) {
 
     return node;
 }
+
+ASTNode* runOptimizer(ASTNode* node) {
+    node = constantFold(node);
+    node = deadCodeElimination(node);
+    node = algebraicSimplification(node);
+
+    return node;
+}

@@ -31,6 +31,9 @@ int main() {
 
     printf("--------------- RISC V ---------------\n");
     generateDataSection();
+    generateTextSection();
+    generateStmtRISCV(root);
+    generateExit();
 
     return 0;
 }   

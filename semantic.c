@@ -4,6 +4,8 @@
 #include "semantic.h"
 #include "symTab.h"
 
+int semanticErrors = 0;
+
 void semanticCheck(ASTNode* root) {
     if(!root) return;
 
@@ -12,7 +14,8 @@ void semanticCheck(ASTNode* root) {
         char* name = root->right->value;
 
         if(lookupCurrentScope(name) != -1) {
-            printf("Semantic Error: Redeclaration of %s\n", name);
+            printf("[Line: %d] Semantic Error: Redeclaration of %s\n", root->lineNum, name);
+            semanticErrors++;
         } else {
             insert(name, type);
         }
@@ -39,8 +42,9 @@ void semanticCheck(ASTNode* root) {
         int idx = lookup(name);
 
         if(idx == -1) {
-            printf("Semantic Error: %s not declared\n", name);
+            printf("[Line: %d] Semantic Error: %s not declared\n", root->lineNum, name);
             root->exprType = "error";
+            semanticErrors++;
         } else {
             root->exprType = symtab[idx].type;
         }
@@ -53,10 +57,18 @@ void semanticCheck(ASTNode* root) {
         if(root->left && root->right &&
            root->left->exprType && root->right->exprType) {
 
-            if(strcmp(root->left->exprType, root->right->exprType) != 0) {
-                printf("Type mismatch in expression\n");
-            } else {
-                root->exprType = root->left->exprType;
+            if(strcmp(root->left->exprType, "error") != 0 && strcmp(root->right->exprType, "error") != 0) {
+                if(strcmp(root->left->exprType, root->right->exprType) != 0) {
+                    printf("[Line: %d] Semantic Error: Type mismatch in arithmetic expression (%s vs %s)\n", 
+                        root->lineNum, root->left->exprType, root->right->exprType);
+                    semanticErrors++;
+                } 
+                else {
+                    root->exprType = root->left->exprType;
+                }
+            } 
+            else {
+                root->exprType = "error";
             }
         }
     }
@@ -70,10 +82,13 @@ void semanticCheck(ASTNode* root) {
         if(root->left && root->right &&
            root->left->exprType && root->right->exprType) {
 
-            if(strcmp(root->left->exprType, root->right->exprType) != 0) {
-                printf("Type mismatch in expression\n");
+            if(strcmp(root->left->exprType, "error") != 0 && strcmp(root->right->exprType, "error") != 0) {
+                if(strcmp(root->left->exprType, root->right->exprType) != 0) {
+                    printf("[Line: %d] Semantic Error: Type mismatch in relational expression (%s vs %s)\n", 
+                        root->lineNum, root->left->exprType, root->right->exprType);
+                    semanticErrors++;   
+                }
             }
-
             root->exprType = "int";
         }
     }
@@ -82,16 +97,43 @@ void semanticCheck(ASTNode* root) {
             int idx = lookup(root->left->value);
             if(idx != -1 && root->right->exprType) {
                 char* idType = symtab[idx].type;
-                if(strcmp(idType, root->right->exprType) != 0) {
-                    printf("Type mismatch in assignment\n");
+
+                if(strcmp(root->right->exprType, "error") != 0) {
+                    if(strcmp(idType, root->right->exprType) != 0) {
+                        printf("[Line: %d] Semantic Error: Type mismatch in assignment. Cannot assign '%s' to variable '%s' of type '%s'\n", 
+                               root->lineNum, root->right->exprType, root->left->value, idType);
+                        semanticErrors++;
+                    }
                 }
             }
         }
     }
     else if(strcmp(root->type, "IF") == 0 || strcmp(root->type, "IF-ELSE") == 0) {
-        if(root->left && root->left->exprType && strcmp(root->left->exprType, "int") != 0) {
-            printf("Condition must evaluate to true or false\n");
+
+        if(root->left && root->left->exprType) {
+            if(strcmp(root->left->exprType, "error") != 0 && strcmp(root->left->exprType, "int") != 0) {
+                printf("[Line: %d] Semantic Error: IF condition must evaluate to an integer(boolean), got '%s'\n", 
+                       root->lineNum, root->left->exprType);
+                semanticErrors++;
+            }
         }
     }
 
+}
+
+void semanticAnalysis(ASTNode* root) {
+    printf("\n===================================================\n");
+    printf("               SEMANTIC ANALYSIS                   \n");
+    printf("===================================================\n");
+
+    semanticErrors = 0; 
+    semanticCheck(root);
+
+    printf("---------------------------------------------------\n");
+    if (semanticErrors == 0) {
+        printf("[SUCCESS] No semantic errors found.\n");
+    } else {
+        printf("[FAILED]  Semantic analysis finished with %d error(s).\n", semanticErrors);
+    }
+    printf("===================================================\n\n");
 }

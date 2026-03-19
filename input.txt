@@ -1,5 +1,14 @@
-int a;
-a = 5;
+int x;
+float y;
 
-int b;
-b = 3;
+int x;
+
+z = 10;
+
+y = 5;
+
+x = x + y;
+
+if (x > y) {
+    x = 1;
+}

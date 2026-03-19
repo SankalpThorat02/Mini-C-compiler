@@ -14,11 +14,13 @@ extern ASTNode* root;
 
 int main() {
     yyparse();
-    printf("--------------- AST ----------------\n");
+    printf("\n===================================================\n");
+    printf("               ABSTRACT SYNTAX TREE                \n");
+    printf("===================================================\n");
     printAST(root, 0);
+    printf("===================================================\n\n");
 
-    printf("--------------- Semantic Check ---------------\n");
-    semanticCheck(root);
+    semanticAnalysis(root);
 
     printSymbolTable();
 

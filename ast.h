@@ -5,6 +5,7 @@ typedef struct ASTNode {
     char* type;
     char* value;
     char* exprType; 
+    int lineNum;
     struct ASTNode* left;
     struct ASTNode* right;
 } ASTNode;

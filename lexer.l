@@ -24,6 +24,8 @@ void printToken(const char* tokenType, const char* lexeme) {
 }
 %}
 
+%option yylineno
+
 %%
 "int"                       { printToken("KEYWORD", yytext); return INT; }
 "float"                     { printToken("KEYWORD", yytext); return FLOAT; }
@@ -57,7 +59,7 @@ void printToken(const char* tokenType, const char* lexeme) {
 
 [ \t]                       ;
 [ \n]                       { totalLines++; printf("\n"); }
-.                           { printf("Lexical Error on line %d: %s\n", totalLines, yytext); }
+.                           { printf("[Line: %d] Lexical Error: %s\n", totalLines, yytext); }
 
 %%
 

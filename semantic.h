@@ -4,5 +4,6 @@
 #include "ast.h"
 
 void semanticCheck(ASTNode* root);
+void semanticAnalysis(ASTNode* root);
 
 #endif

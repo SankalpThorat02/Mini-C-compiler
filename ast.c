@@ -3,11 +3,14 @@
 #include<string.h>
 #include "ast.h"
 
+extern int yylineno;
+
 ASTNode* createNode(char* type, char* value, ASTNode* left, ASTNode* right) {
     ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
     node->type = strdup(type);
     node->value = value ? strdup(value) : NULL;
     node->exprType = NULL;
+    node->lineNum = yylineno;
     node->left = left;
     node->right = right;
 

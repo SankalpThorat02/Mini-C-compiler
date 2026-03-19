@@ -44,8 +44,20 @@ void exitScope() {
 }
 
 void printSymbolTable() {
-    printf("--------------- Symbol Table ---------------\n");
-    for(int i = 0; i < symCount; i++) {
-        printf("%s : %s\n", symtab[i].name, symtab[i].type);
+    printf("\n=========================================================\n");
+    printf("              GLOBAL SYMBOL TABLE (SCOPE 0)              \n");
+    printf("=========================================================\n");
+    
+    printf("| %-5s | %-15s | %-10s | %-10s |\n", "INDEX", "NAME", "TYPE", "SCOPE");
+    printf("---------------------------------------------------------\n");
+
+    if (symCount == 0) {
+        printf("| %-51s |\n", "               (No Global Variables)                 ");
+    } else {
+        for(int i = 0; i < symCount; i++) {
+            printf("| %-5d | %-15s | %-10s | %-10d |\n", 
+                   i, symtab[i].name, symtab[i].type, symtab[i].scope);
+        }
     }
+    printf("=========================================================\n\n");
 }

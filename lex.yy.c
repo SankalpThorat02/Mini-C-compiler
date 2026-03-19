@@ -950,7 +950,7 @@ YY_RULE_SETUP
 case 28:
 YY_RULE_SETUP
 #line 62 "lexer.l"
-{ printf("Lexical Error on line %d: %s\n", totalLines, yytext); }
+{ printf("[Line: %d] Lexical Error: %s\n", totalLines, yytext); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP

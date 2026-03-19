@@ -1,77 +1,75 @@
+
+===================================================
+              LEXICAL ANALYSIS PHASE               
+===================================================
+TOKEN TYPE         | LEXEME
+---------------------------------------------------
+KEYWORD            | int
+IDENTIFIER         | a
+PUNCTUATION        | SEMI_COLON
+
+IDENTIFIER         | a
+ASSIGN_OP          | =
+NUMBER             | 5
+PUNCTUATION        | SEMI_COLON
+
+
+KEYWORD            | int
+IDENTIFIER         | b
+PUNCTUATION        | SEMI_COLON
+
+IDENTIFIER         | b
+ASSIGN_OP          | =
+NUMBER             | 3
+PUNCTUATION        | SEMI_COLON
+---------------------------------------------------
+              LEXICAL ANALYSIS SUMMARY             
+---------------------------------------------------
+Total Tokens Scanned  : 14
+Total Lines Processed : 4
+===================================================
+
 --------------- AST ----------------
 PROGRAM
   PROGRAM
     PROGRAM
       PROGRAM
-        PROGRAM
-          PROGRAM
-            DECL
-              TYPE (int)
-              ID (a)
-          DECL
-            TYPE (int)
-            ID (b)
         DECL
           TYPE (int)
-          ID (c)
+          ID (a)
       =
         ID (a)
-        NUM (10)
-    =
+        NUM (5)
+    DECL
+      TYPE (int)
       ID (b)
-      NUM (20)
   =
-    ID (c)
-    +
-      ID (a)
-      ID (b)
+    ID (b)
+    NUM (3)
 --------------- Semantic Check ---------------
 --------------- Symbol Table ---------------
 a : int
 b : int
-c : int
 --------------- TAC ---------------
-a = 10
-b = 20
-t1 = a + b
-c = t1
+a = 5
+b = 3
 --------------- Optimized TAC ---------------
-a = 10
-b = 20
-t2 = a + b
-c = t2
+a = 5
+b = 3
 --------------- RISC V ---------------
 .data:
     a: .word 0
     b: .word 0
-    c: .word 0
 
 .text:
 main:
 
-    li a0, 10
+    li a0, 5
     la t0, a
     sw a0, 0(t0)
 
-    li a0, 20
+    li a0, 3
     la t0, b
-    sw a0, 0(t0)
-
-    la t0, a
-    lw a0, 0(t0)
-
-    addi sp, sp, -4
-    sw a0, 0(sp)
-
-    la t0, b
-    lw a0, 0(t0)
-
-    mv t1, a0
-    lw t0, 0(sp)
-    addi sp, sp, 4
-
-    add a0, t0, t1
-    la t0, c
     sw a0, 0(t0)
 
 

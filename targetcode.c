@@ -29,7 +29,7 @@ void generateExit() {
     printf("\nli a7, 10\n");
     printf("ecall\n");
 }
-// Generates RISC-V for expressions, leaving the final result in register a0
+
 void generateExprRISCV(ASTNode* node) {
     if (!node) return;
 

@@ -11,9 +11,7 @@ void printToken(const char* tokenType, const char* lexeme) {
     static int headerPrinted = 0;
     
     if (!headerPrinted) {
-        printf("\n===================================================\n");
-        printf("              LEXICAL ANALYSIS PHASE               \n");
-        printf("===================================================\n");
+        printf("<PHASE_LEXER>\n");
         printf("%-18s | %s\n", "TOKEN TYPE", "LEXEME");
         printf("---------------------------------------------------\n");
         headerPrinted = 1;
@@ -80,7 +78,7 @@ int yywrap() {
     printf("---------------------------------------------------\n");
     printf("Total Tokens Scanned  : %d\n", totalTokens);
     printf("Total Lines Processed : %d\n", totalLines);
-    printf("===================================================\n\n");
+    printf("\n");
 
     return 1;
 }

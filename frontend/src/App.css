@@ -1,0 +1,21 @@
+/* The draggable splitter bar */
+.gutter {
+  background-color: #30363d;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  position: relative;
+  z-index: 10;
+}
+
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+  width: 4px; /* Thickness of the drag bar */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* The neon glow effect on hover/drag */
+.gutter.gutter-horizontal:hover,
+.gutter.gutter-horizontal:active {
+  background-color: #58a6ff;
+  box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
+}

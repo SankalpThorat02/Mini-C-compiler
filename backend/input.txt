@@ -1,6 +1,4 @@
-int count;
-count = 0;
+int x;
+x = 5;
 
-for(count = 0; count < 5; count++) {
-     
-}
+x = x  + 1;

@@ -53,27 +53,28 @@ app.post('/api/compile', (req, res) => {
 });
 
 // A helper function to slice up your beautiful C printf formatting
+// The 6-Phase Bulletproof Parser
+// The Clean-Marker Parser
+// The 7-Phase Clean-Marker Parser
 function parseCompilerOutput(output) {
-    // This looks for your specific header banners to split the text
-    const lexerStart = output.indexOf("LEXICAL ANALYSIS PHASE");
-    const astStart = output.indexOf("SEMANTIC ANALYSIS"); // Using this as the end of AST for now
-    const tacStart = output.indexOf("Three Address Code"); // You might need to add a banner for this in C!
-    const targetStart = output.indexOf(".text:");
+    const lexerRaw = output.split('<PHASE_LEXER>')[1]?.split('<PHASE_AST>')[0];
+    const astRaw = output.split('<PHASE_AST>')[1]?.split('<PHASE_SEMANTIC>')[0];
+    const semanticRaw = output.split('<PHASE_SEMANTIC>')[1]?.split('<PHASE_SYMTAB>')[0];
+    const symtabRaw = output.split('<PHASE_SYMTAB>')[1]?.split('<PHASE_TAC>')[0];
+    const tacRaw = output.split('<PHASE_TAC>')[1]?.split('<PHASE_OPT_TAC>')[0];
+    const optTacRaw = output.split('<PHASE_OPT_TAC>')[1]?.split('<PHASE_RISCV>')[0]; // NEW!
+    const riscvRaw = output.split('<PHASE_RISCV>')[1];
 
     return {
-        lexer: extractSection(output, lexerStart, astStart),
-        ast: extractSection(output, astStart, tacStart), 
-        tac: extractSection(output, tacStart, targetStart),
-        riscv: targetStart !== -1 ? output.substring(targetStart) : "No target code generated."
+        lexer: lexerRaw ? lexerRaw.trim() : "No Lexer Output",
+        ast: astRaw ? astRaw.trim() : "No AST Output",
+        semantic: semanticRaw ? semanticRaw.trim() : "No Semantic Output",
+        symtab: symtabRaw ? symtabRaw.trim() : "No Symbol Table Output",
+        tac: tacRaw ? tacRaw.trim() : "No TAC Output",
+        opttac: optTacRaw ? optTacRaw.trim() : "No Optimized TAC Output", // NEW!
+        riscv: riscvRaw ? riscvRaw.trim() : "No Target Code Output"
     };
 }
-
-function extractSection(text, start, end) {
-    if (start === -1) return "Section not found";
-    if (end === -1) return text.substring(start);
-    return text.substring(start, end);
-}
-
 
 app.get("/api/compile", (req, res) => {
     res.send("Hello");

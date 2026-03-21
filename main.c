@@ -15,38 +15,28 @@ extern ASTNode* root;
 int main() {
     yyparse();
     
-    printf("\n===================================================\n");
-    printf("               ABSTRACT SYNTAX TREE                \n");
-    printf("===================================================\n");
+    printf("<PHASE_AST>\n");
     printAST(root, 0);
-    printf("===================================================\n\n");
 
+    printf("<PHASE_SEMANTIC>\n");
     semanticAnalysis(root);
 
+    printf("<PHASE_SYMTAB>\n");
     printSymbolTable();
 
-    printf("\n=========================================================\n");
-    printf("              Three Address Code (TAC)                      \n");
-    printf("=========================================================\n");
+    printf("<PHASE_TAC>\n");
     generateStmtTAC(root); 
-    printf("===================================================\n\n");
 
 
-    printf("\n=========================================================\n");
-    printf("              Optimized TAC                             \n");
-    printf("=========================================================\n");
+    printf("<PHASE_OPT_TAC>\n");
     root = runOptimizer(root);
     generateStmtTAC(root); 
-    printf("===================================================\n\n");
 
-    printf("\n=========================================================\n");
-    printf("              Target Code (RISC V)                      \n");
-    printf("=========================================================\n");
+    printf("<PHASE_RISCV>\n");
     generateDataSection();
     generateTextSection();
     generateStmtRISCV(root);
     generateExit();
-    printf("===================================================\n\n");
 
     return 0;
 }   

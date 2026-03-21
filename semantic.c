@@ -177,18 +177,12 @@ void semanticCheck(ASTNode* root) {
 }
 
 void semanticAnalysis(ASTNode* root) {
-    printf("\n===================================================\n");
-    printf("               SEMANTIC ANALYSIS                   \n");
-    printf("===================================================\n");
-
     semanticErrors = 0; 
     semanticCheck(root);
 
-    printf("---------------------------------------------------\n");
     if (semanticErrors == 0) {
         printf("[SUCCESS] No semantic errors found.\n");
     } else {
         printf("[FAILED]  Semantic analysis finished with %d error(s).\n", semanticErrors);
     }
-    printf("===================================================\n\n");
 }

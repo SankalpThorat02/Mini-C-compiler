@@ -4,8 +4,24 @@
 
 #include "tac.h"
 
+#define MAX_NEST 100
+char* loopStartStack[MAX_NEST];
+char* loopEndStack[MAX_NEST];
+int loopTop = -1;
+
+void pushLoopTAC(char* start, char* end) {
+    loopTop++;
+    loopStartStack[loopTop] = start;
+    loopEndStack[loopTop] = end;
+}
+
+void popLoopTAC() {
+    loopTop--;
+}
+
 int tempCount = 1;
 int labelCount = 1;
+
 
 char* newTemp() {
     char buffer[10];
@@ -116,6 +132,8 @@ char* generateStmtTAC(ASTNode* node) {
         char* startLabel = newLabel();
         char* endLabel = newLabel();
 
+        pushLoopTAC(startLabel, endLabel);
+
         printf("%s:\n", startLabel);
         char* condTemp = generateExprTAC(node->left);
         printf("ifFalse %s goto %s\n", condTemp, endLabel);
@@ -125,6 +143,17 @@ char* generateStmtTAC(ASTNode* node) {
         printf("goto %s\n", startLabel);
         printf("%s:\n", endLabel);
 
+        popLoopTAC();
+        return NULL;
+    }
+
+    else if(strcmp(node->type, "BREAK") == 0) {
+        if(loopTop >= 0) printf("goto %s\n", loopEndStack[loopTop]);
+        return NULL;
+    }
+    
+    else if(strcmp(node->type, "CONTINUE") == 0) {
+        if(loopTop >= 0) printf("goto %s\n", loopStartStack[loopTop]);
         return NULL;
     }
 

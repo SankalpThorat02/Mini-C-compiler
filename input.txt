@@ -1,11 +1,9 @@
-int a;
-int b;
-a = 10;
-b = 99;
+bool isRunning;
+isRunning = true;
 
-a <=> b;
+int i;
 
-int counter;
-counter = 5;
-counter++;
-counter--;
+while( isRunning ) {
+    isRunning = false;
+    continue;
+}

@@ -5,6 +5,7 @@
 #include "symTab.h"
 
 int semanticErrors = 0;
+int loopDepth = 0;
 
 void semanticCheck(ASTNode* root) {
     if(!root) return;
@@ -29,6 +30,22 @@ void semanticCheck(ASTNode* root) {
         semanticCheck(root->right);
         exitScope();
 
+        return;
+    }
+
+    else if(strcmp(root->type, "BREAK") == 0 || strcmp(root->type, "CONTINUE") == 0) {
+        if(loopDepth == 0) {
+            printf("[Line: %d] Semantic Error: '%s' statement must be inside a loop\n", root->lineNum, root->type);
+            semanticErrors++;
+        }
+        return;
+    }
+
+    else if(strcmp(root->type, "WHILE") == 0) {
+        loopDepth++;
+        semanticCheck(root->left);  
+        semanticCheck(root->right);
+        loopDepth--;
         return;
     }
 
@@ -100,8 +117,12 @@ void semanticCheck(ASTNode* root) {
                 char* idType = symtab[idx].type;
 
                 if(strcmp(root->right->exprType, "error") != 0) {
-                    if(strcmp(idType, root->right->exprType) != 0) {
-                        printf("[Line: %d] Semantic Error: Type mismatch in assignment. Cannot assign '%s' to variable '%s' of type '%s'\n", 
+                    int isExact = (strcmp(idType, root->right->exprType) == 0);
+                    int isIntBool = (strcmp(idType, "bool") == 0 && strcmp(root->right->exprType, "int") == 0);
+                    int isBoolInt = (strcmp(idType, "int") == 0 && strcmp(root->right->exprType, "bool") == 0);
+
+                    if(!isExact && !isIntBool && !isBoolInt) {
+                        printf("[Line: %d] Semantic Error: Cannot assign '%s' to variable '%s' of type '%s'\n", 
                                root->lineNum, root->right->exprType, root->left->value, idType);
                         semanticErrors++;
                     }
@@ -119,6 +140,7 @@ void semanticCheck(ASTNode* root) {
             }
         }
     }
+    
     else if(strcmp(root->type, "<=>") == 0) {
         if(root->left && root->right) {
             int idxLeft = lookup(root->left->value);

@@ -4,7 +4,22 @@
 #include "symTab.h"
 #include "ast.h"
 
+#define RV_MAX_NEST 100
+char* rvLoopStartStack[RV_MAX_NEST];
+char* rvLoopEndStack[RV_MAX_NEST];
+int rvLoopTop = -1;
+
 int rvLabelCount = 1;
+
+void pushLoopRV(char* start, char* end) {
+    rvLoopTop++;
+    rvLoopStartStack[rvLoopTop] = start;
+    rvLoopEndStack[rvLoopTop] = end;
+}
+
+void popLoopRV() {
+    rvLoopTop--;
+}
 
 char* newRiscVLabel() {
     char buffer[10];
@@ -157,6 +172,8 @@ void generateStmtRISCV(ASTNode* node) {
         char* startLabel = newRiscVLabel();
         char* endLabel = newRiscVLabel();
         
+        pushLoopRV(startLabel, endLabel);
+
         printf("%s:\n", startLabel);
         generateExprRISCV(node->left);
         printf("    beqz a0, %s\n", endLabel);
@@ -165,6 +182,22 @@ void generateStmtRISCV(ASTNode* node) {
         printf("    j %s\n", startLabel);
         
         printf("%s:\n\n", endLabel);
+
+        popLoopRV();
+        return;
+    }
+
+    if (strcmp(node->type, "BREAK") == 0) {
+        if(rvLoopTop >= 0) {
+            printf("    j %s\n\n", rvLoopEndStack[rvLoopTop]);
+        }
+        return;
+    }
+
+    if (strcmp(node->type, "CONTINUE") == 0) {
+        if(rvLoopTop >= 0) {
+            printf("    j %s\n\n", rvLoopStartStack[rvLoopTop]);
+        }
         return;
     }
 

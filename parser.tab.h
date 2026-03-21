@@ -77,7 +77,13 @@ extern int yydebug;
     INT = 283,
     FLOAT = 284,
     CHAR = 285,
-    LOWER_THAN_ELSE = 286
+    BOOL = 286,
+    STRING = 287,
+    TRUE = 288,
+    FALSE = 289,
+    BREAK = 290,
+    CONTINUE = 291,
+    LOWER_THAN_ELSE = 292
   };
 #endif
 
@@ -90,7 +96,7 @@ union YYSTYPE
     ASTNode* node;
     char* str;
 
-#line 94 "parser.tab.h"
+#line 100 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

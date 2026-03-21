@@ -63,15 +63,10 @@ PROGRAM
 <PHASE_SEMANTIC>
 [SUCCESS] No semantic errors found.
 <PHASE_SYMTAB>
-
-=========================================================
-              GLOBAL SYMBOL TABLE                        
-=========================================================
 | INDEX | NAME            | TYPE       | SCOPE      |
 ---------------------------------------------------------
 | 0     | isRunning       | bool       | 0          |
 | 1     | i               | int        | 0          |
-=========================================================
 
 <PHASE_TAC>
 isRunning = 1

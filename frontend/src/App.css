@@ -19,3 +19,9 @@
   background-color: #58a6ff;
   box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
 }
+
+/* Clean up the D3 Tree connecting branches */
+.rd3t-link {
+  stroke: #8b949e !important; /* Lighter grey for dark background */
+  stroke-width: 2px !important;
+}

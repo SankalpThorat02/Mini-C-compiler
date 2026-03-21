@@ -44,10 +44,6 @@ void exitScope() {
 }
 
 void printSymbolTable() {
-    printf("\n=========================================================\n");
-    printf("              GLOBAL SYMBOL TABLE                        \n");
-    printf("=========================================================\n");
-    
     printf("| %-5s | %-15s | %-10s | %-10s |\n", "INDEX", "NAME", "TYPE", "SCOPE");
     printf("---------------------------------------------------------\n");
 
@@ -59,5 +55,5 @@ void printSymbolTable() {
                    i, symtab[i].name, symtab[i].type, symtab[i].scope);
         }
     }
-    printf("=========================================================\n\n");
+    printf("\n");
 }

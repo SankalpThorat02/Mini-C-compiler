@@ -32,6 +32,8 @@ ASTNode* root = NULL;
 %token IF ELSE WHILE FOR
 
 %token INT FLOAT CHAR
+%token BOOL STRING
+%token TRUE FALSE BREAK CONTINUE
 
 %left EQ NE GE LE GT LT
 %left PLUS MINUS
@@ -51,7 +53,8 @@ program:
 TYPE:
       INT { $$ = createNode("TYPE", "int", NULL, NULL); }
     | FLOAT { $$ = createNode("TYPE", "float", NULL, NULL); }
-    | CHAR { $$ = createNode("TYPE", "char", NULL, NULL); };
+    | CHAR { $$ = createNode("TYPE", "char", NULL, NULL); }
+    | BOOL { $$ = createNode("TYPE", "bool", NULL, NULL); };
 
 S:  
     TYPE ID SEMI {  
@@ -84,6 +87,8 @@ S:
 
         $$ = createNode("BLOCK", NULL, initNode, whileLoop);
     }
+    | BREAK SEMI { $$ = createNode("BREAK", NULL, NULL, NULL); }
+    | CONTINUE SEMI { $$ = createNode("CONTINUE", NULL, NULL, NULL); }
     | ID SWAP ID SEMI {
         ASTNode* leftId = createNode("ID", $1, NULL, NULL);
         ASTNode* rightId = createNode("ID", $3, NULL, NULL);
@@ -116,7 +121,9 @@ E:
 
     | LPAREN E RPAREN { $$ = $2; }
     | NUM { $$ = createNode("NUM", $1, NULL, NULL); }
-    | ID { $$ = createNode("ID", $1, NULL, NULL); };
+    | ID { $$ = createNode("ID", $1, NULL, NULL); }
+    | TRUE { $$ = createNode("NUM", "1", NULL, NULL); }
+    | FALSE { $$ = createNode("NUM", "0", NULL, NULL); };
 %%
 
 void yyerror(const char *s){

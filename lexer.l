@@ -34,6 +34,14 @@ void printToken(const char* tokenType, const char* lexeme) {
 "else"                      { printToken("KEYWORD", yytext); return ELSE; }
 "while"                     { printToken("KEYWORD", yytext); return WHILE; }
 "for"                       { printToken("KEYWORD", yytext); return FOR; }
+"break"                     { printToken("KEYWORD", yytext); return BREAK; }
+"continue"                  { printToken("KEYWORD", yytext); return CONTINUE; }
+
+"bool"                      { printToken("KEYWORD", yytext); return BOOL; }
+"string"                    { printToken("KEYWORD", yytext); return STRING; }
+
+"true"                      { yylval.str = strdup("1"); printToken("BOOLEAN", yytext); return TRUE; }
+"false"                     { yylval.str = strdup("0"); printToken("BOOLEAN", yytext); return FALSE; }
 
 [0-9]+                      { yylval.str = strdup(yytext); printToken("NUMBER", yytext); return NUM; }
 [a-zA-Z_][a-zA-Z0-9_]*      { yylval.str = strdup(yytext); printToken("IDENTIFIER", yytext); return ID; }

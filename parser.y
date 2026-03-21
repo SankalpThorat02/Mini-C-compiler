@@ -28,6 +28,7 @@ ASTNode* root = NULL;
 %token LPAREN RPAREN LBRACE RBRACE
 
 %token EQ NE GE LE GT LT
+%token SWAP INC DEC
 %token IF ELSE WHILE FOR
 
 %token INT FLOAT CHAR
@@ -70,6 +71,18 @@ S:
     }
     | WHILE LPAREN E RPAREN S {
         $$ = createNode("WHILE", NULL, $3, $5);
+    }
+    | FOR LPAREN ID ASSIGN E SEMI E SEMI ID ASSIGN E RPAREN S {
+        ASTNode* idNode = createNode("ID", $3, NULL, NULL);
+        ASTNode* initNode = createNode("=", NULL, idNode, $5);
+
+        ASTNode* incID = createNode("ID", $9, NULL, NULL);
+        ASTNode* incNode = createNode("=", NULL, incID, $11);
+
+        ASTNode* whileBody = createNode("BLOCK", NULL, $13, incNode);
+        ASTNode* whileLoop = createNode("WHILE", NULL, $7, whileBody);
+
+        $$ = createNode("BLOCK", NULL, initNode, whileLoop);
     }
     | LBRACE program RBRACE {
         $$ = createNode("BLOCK", NULL, $2, NULL);

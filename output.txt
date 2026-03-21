@@ -5,58 +5,61 @@
 TOKEN TYPE         | LEXEME
 ---------------------------------------------------
 KEYWORD            | int
-IDENTIFIER         | x
+IDENTIFIER         | n
 PUNCTUATION        | SEMI_COLON
 
-KEYWORD            | float
-IDENTIFIER         | y
-PUNCTUATION        | SEMI_COLON
-
-
-KEYWORD            | int
-IDENTIFIER         | x
-PUNCTUATION        | SEMI_COLON
-
-
-IDENTIFIER         | z
-ASSIGN_OP          | =
-NUMBER             | 10
-PUNCTUATION        | SEMI_COLON
-
-
-IDENTIFIER         | y
+IDENTIFIER         | n
 ASSIGN_OP          | =
 NUMBER             | 5
 PUNCTUATION        | SEMI_COLON
 
 
-IDENTIFIER         | x
+KEYWORD            | int
+IDENTIFIER         | sum
+PUNCTUATION        | SEMI_COLON
+
+IDENTIFIER         | sum
 ASSIGN_OP          | =
-IDENTIFIER         | x
-ARITH_OP (PLUS)    | +
-IDENTIFIER         | y
+NUMBER             | 0
 PUNCTUATION        | SEMI_COLON
 
 
-KEYWORD            | if
+KEYWORD            | int
+IDENTIFIER         | i
+PUNCTUATION        | SEMI_COLON
+
+
+KEYWORD            | for
 PUNCTUATION        | LPAREN
-IDENTIFIER         | x
-REL_OP (GT)        | >
-IDENTIFIER         | y
+IDENTIFIER         | i
+ASSIGN_OP          | =
+NUMBER             | 1
+PUNCTUATION        | SEMI_COLON
+IDENTIFIER         | i
+REL_OP (LE)        | <=
+IDENTIFIER         | n
+PUNCTUATION        | SEMI_COLON
+IDENTIFIER         | i
+ASSIGN_OP          | =
+IDENTIFIER         | i
+ARITH_OP (PLUS)    | +
+NUMBER             | 1
 PUNCTUATION        | RPAREN
 PUNCTUATION        | LBRACE
 
-IDENTIFIER         | x
+IDENTIFIER         | sum
 ASSIGN_OP          | =
-NUMBER             | 1
+IDENTIFIER         | sum
+ARITH_OP (PLUS)    | +
+IDENTIFIER         | i
 PUNCTUATION        | SEMI_COLON
 
 PUNCTUATION        | RBRACE
 ---------------------------------------------------
               LEXICAL ANALYSIS SUMMARY             
 ---------------------------------------------------
-Total Tokens Scanned  : 35
-Total Lines Processed : 13
+Total Tokens Scanned  : 41
+Total Lines Processed : 10
 ===================================================
 
 
@@ -69,119 +72,131 @@ PROGRAM
       PROGRAM
         PROGRAM
           PROGRAM
-            PROGRAM
-              DECL
-                TYPE (int)
-                ID (x)
             DECL
-              TYPE (float)
-              ID (y)
-          DECL
-            TYPE (int)
-            ID (x)
-        =
-          ID (z)
-          NUM (10)
+              TYPE (int)
+              ID (n)
+          =
+            ID (n)
+            NUM (5)
+        DECL
+          TYPE (int)
+          ID (sum)
       =
-        ID (y)
-        NUM (5)
+        ID (sum)
+        NUM (0)
+    DECL
+      TYPE (int)
+      ID (i)
+  BLOCK
     =
-      ID (x)
-      +
-        ID (x)
-        ID (y)
-  IF
-    >
-      ID (x)
-      ID (y)
-    BLOCK
-      PROGRAM
+      ID (i)
+      NUM (1)
+    WHILE
+      <=
+        ID (i)
+        ID (n)
+      BLOCK
+        BLOCK
+          PROGRAM
+            =
+              ID (sum)
+              +
+                ID (sum)
+                ID (i)
         =
-          ID (x)
-          NUM (1)
+          ID (i)
+          +
+            ID (i)
+            NUM (1)
 ===================================================
 
 
 ===================================================
                SEMANTIC ANALYSIS                   
 ===================================================
-[Line: 4] Semantic Error: Redeclaration of x
-[Line: 6] Semantic Error: z not declared
-[Line: 8] Semantic Error: Type mismatch in assignment. Cannot assign 'int' to variable 'y' of type 'float'
-[Line: 10] Semantic Error: Type mismatch in arithmetic expression (int vs float)
-[Line: 12] Semantic Error: Type mismatch in relational expression (int vs float)
 ---------------------------------------------------
-[FAILED]  Semantic analysis finished with 5 error(s).
+[SUCCESS] No semantic errors found.
 ===================================================
 
 
 =========================================================
-              GLOBAL SYMBOL TABLE (SCOPE 0)              
+              GLOBAL SYMBOL TABLE                        
 =========================================================
 | INDEX | NAME            | TYPE       | SCOPE      |
 ---------------------------------------------------------
-| 0     | x               | int        | 0          |
-| 1     | y               | float      | 0          |
+| 0     | n               | int        | 0          |
+| 1     | sum             | int        | 0          |
+| 2     | i               | int        | 0          |
 =========================================================
 
---------------- TAC ---------------
-z = 10
-y = 5
-t1 = x + y
-x = t1
-t2 = x > y
-ifFalse t2 goto L1
-x = 1
+
+=========================================================
+              Three Address Code (TAC)                      
+=========================================================
+n = 5
+sum = 0
+i = 1
 L1:
---------------- Optimized TAC ---------------
-z = 10
-y = 5
-t3 = x + y
-x = t3
-t4 = x > y
-ifFalse t4 goto L2
-x = 1
+t1 = i <= n
+ifFalse t1 goto L2
+t2 = sum + i
+sum = t2
+t3 = i + 1
+i = t3
+goto L1
 L2:
---------------- RISC V ---------------
+===================================================
+
+
+=========================================================
+              Optimized TAC                             
+=========================================================
+n = 5
+sum = 0
+i = 1
+L3:
+t4 = i <= n
+ifFalse t4 goto L4
+t5 = sum + i
+sum = t5
+t6 = i + 1
+i = t6
+goto L3
+L4:
+===================================================
+
+
+=========================================================
+              Target Code (RISC V)                      
+=========================================================
 .data:
-    x: .word 0
-    y: .word 0
+    n: .word 0
+    sum: .word 0
+    i: .word 0
 
 .text:
 main:
 
-    li a0, 10
-    la t0, z
-    sw a0, 0(t0)
-
     li a0, 5
-    la t0, y
+    la t0, n
     sw a0, 0(t0)
 
-    la t0, x
+    li a0, 0
+    la t0, sum
+    sw a0, 0(t0)
+
+    li a0, 1
+    la t0, i
+    sw a0, 0(t0)
+
+L1:
+    la t0, i
     lw a0, 0(t0)
 
     addi sp, sp, -4
     sw a0, 0(sp)
 
-    la t0, y
-    lw a0, 0(t0)
-
-    mv t1, a0
-    lw t0, 0(sp)
-    addi sp, sp, 4
-
-    add a0, t0, t1
-    la t0, x
-    sw a0, 0(t0)
-
-    la t0, x
-    lw a0, 0(t0)
-
-    addi sp, sp, -4
-    sw a0, 0(sp)
-
-    la t0, y
+    la t0, n
     lw a0, 0(t0)
 
     mv t1, a0
@@ -189,13 +204,45 @@ main:
     addi sp, sp, 4
 
     sgt a0, t0, t1
-    beqz a0, L1
-    li a0, 1
-    la t0, x
+    xori a0, a0, 1
+    beqz a0, L2
+    la t0, sum
+    lw a0, 0(t0)
+
+    addi sp, sp, -4
+    sw a0, 0(sp)
+
+    la t0, i
+    lw a0, 0(t0)
+
+    mv t1, a0
+    lw t0, 0(sp)
+    addi sp, sp, 4
+
+    add a0, t0, t1
+    la t0, sum
     sw a0, 0(t0)
 
-L1:
+    la t0, i
+    lw a0, 0(t0)
+
+    addi sp, sp, -4
+    sw a0, 0(sp)
+
+    li a0, 1
+    mv t1, a0
+    lw t0, 0(sp)
+    addi sp, sp, 4
+
+    add a0, t0, t1
+    la t0, i
+    sw a0, 0(t0)
+
+    j L1
+L2:
 
 
 li a7, 10
 ecall
+===================================================
+

@@ -45,7 +45,7 @@ void exitScope() {
 
 void printSymbolTable() {
     printf("\n=========================================================\n");
-    printf("              GLOBAL SYMBOL TABLE (SCOPE 0)              \n");
+    printf("              GLOBAL SYMBOL TABLE                        \n");
     printf("=========================================================\n");
     
     printf("| %-5s | %-15s | %-10s | %-10s |\n", "INDEX", "NAME", "TYPE", "SCOPE");

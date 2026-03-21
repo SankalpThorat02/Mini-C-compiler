@@ -36,8 +36,9 @@ void printToken(const char* tokenType, const char* lexeme) {
 "for"                       { printToken("KEYWORD", yytext); return FOR; }
 
 [0-9]+                      { yylval.str = strdup(yytext); printToken("NUMBER", yytext); return NUM; }
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.str = strdup(yytext); printToken("IDENTIFIER", yytext); return ID; }
+[a-zA-Z_][a-zA-Z0-9_]*      { yylval.str = strdup(yytext); printToken("IDENTIFIER", yytext); return ID; }
 
+"<=>"                       { printToken("SWAP_OP", yytext); return SWAP; }
 "=="                        { printToken("REL_OP (EQ)", yytext); return EQ; }
 "!="                        { printToken("REL_OP (NE)", yytext); return NE; }
 ">="                        { printToken("REL_OP (GE)", yytext); return GE; }
@@ -45,6 +46,8 @@ void printToken(const char* tokenType, const char* lexeme) {
 ">"                         { printToken("REL_OP (GT)", yytext); return GT; }
 "<"                         { printToken("REL_OP (LT)", yytext); return LT; }
 
+"++"                        { printToken("INC_OP", yytext); return INC; }
+"--"                        { printToken("DEC_OP", yytext); return DEC; }
 "="                         { printToken("ASSIGN_OP", yytext); return ASSIGN; }
 "+"                         { printToken("ARITH_OP (PLUS)", yytext); return PLUS; }
 "*"                         { printToken("ARITH_OP (MUL)", yytext); return MUL; }

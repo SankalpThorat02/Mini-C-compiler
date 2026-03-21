@@ -87,6 +87,7 @@ void generateStmtRISCV(ASTNode* node) {
 
     if (strcmp(node->type, "BLOCK") == 0) {
         generateStmtRISCV(node->left);
+        generateStmtRISCV(node->right);
         return;
     }
 

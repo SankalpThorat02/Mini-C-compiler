@@ -26,6 +26,7 @@ void semanticCheck(ASTNode* root) {
     else if(strcmp(root->type, "BLOCK") == 0) {
         enterScope();
         semanticCheck(root->left);
+        semanticCheck(root->right);
         exitScope();
 
         return;

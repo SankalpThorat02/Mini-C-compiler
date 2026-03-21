@@ -1,14 +1,11 @@
-int x;
-float y;
+int n;
+n = 5;
 
-int x;
+int sum;
+sum = 0;
 
-z = 10;
+int i;
 
-y = 5;
-
-x = x + y;
-
-if (x > y) {
-    x = 1;
+for (i = 1; i <= n; i = i + 1) {
+    sum = sum + i;
 }

@@ -112,6 +112,7 @@ char* generateStmtTAC(ASTNode* node) {
 
     else if(strcmp(node->type, "BLOCK") == 0) {
         generateStmtTAC(node->left);
+        generateStmtTAC(node->right);
         return NULL;
     }
 

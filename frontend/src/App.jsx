@@ -5,7 +5,6 @@ import Tree from 'react-d3-tree';
 import Split from 'react-split';
 import './App.css';
 
-// The magic algorithm: Indented text -> Hierarchical JSON
 const parseASTToJSON = (rawText) => {
   if (!rawText || rawText.includes("No AST Output")) return null;
 
@@ -110,13 +109,11 @@ function App() {
     }
   };
 
-  // Safe check to see if we have valid AST data to render
   const astData = parseASTToJSON(output.ast);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#0d1117', color: '#c9d1d9', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
       
-      {/* 1. TOP NAVBAR */}
       <header style={{ padding: '12px 24px', backgroundColor: '#161b22', borderBottom: '1px solid #30363d', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#ff5f56' }}></div>
@@ -136,12 +133,10 @@ function App() {
         </button>
       </header>
 
-      {/* 2. MAIN SPLIT WORKSPACE */}
       <Split 
         sizes={[50, 50]} minSize={300} gutterSize={4} gutterAlign="center" 
         direction="horizontal" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}
       >
-        {/* LEFT: Editor Area */}
         <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0d1117', height: '100%' }}>
           <div style={{ padding: '8px 16px', backgroundColor: '#161b22', fontSize: '12px', color: '#8b949e', borderBottom: '1px solid #30363d', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '600' }}>
             source.c
@@ -155,15 +150,13 @@ function App() {
           </div>
         </div>
 
-        {/* RIGHT: Output Terminal */}
         <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0a0c10', height: '100%' }}>
           
-          {/* Custom Tab Navigation */}
           <div style={{ display: 'flex', backgroundColor: '#161b22', padding: '10px 10px 0 10px', borderBottom: '1px solid #30363d', gap: '4px', flexWrap: 'wrap' }}>
             {[
-              { id: 'lexer', label: 'Scanner' },
+              { id: 'lexer', label: 'Lexer' },
               { id: 'ast', label: 'AST' },
-              { id: 'semantic', label: 'Semantic' },
+              { id: 'semantic', label: 'Semantic Analysis' },
               { id: 'symtab', label: 'Symbol Table' },
               { id: 'tac', label: 'Raw TAC' },
               { id: 'opttac', label: 'Optimized TAC' },
@@ -188,12 +181,10 @@ function App() {
             ))}
           </div>
 
-          {/* Terminal Screen & Visualizer */}
           <div style={{ 
             flex: 1, 
             padding: activeTab === 'ast' ? '0' : '24px', 
             overflowY: activeTab === 'ast' ? 'hidden' : 'auto', 
-            // CHANGE THEM TO THIS:
             backgroundColor: 'transparent',
             backgroundImage: 'radial-gradient(circle at top right, rgba(88, 166, 255, 0.05), transparent 50%)',
             position: 'relative'
@@ -202,13 +193,12 @@ function App() {
               <div style={{ color: '#484f58', fontStyle: 'italic', marginTop: '20px', padding: '24px' }}>Run your code to see output...</div>
             ) : activeTab === 'ast' && astData ? (
               
-              /* 🌟 THE SAFE, LIGHT-THEMED VISUAL AST RENDERER 🌟 */
               <div style={{ width: '100%', height: '100%' }}>
                 <Tree 
                   data={astData} 
                   orientation="vertical"
                   pathFunc="diagonal" 
-                  translate={{ x: 300, y: 50 }} // Safely hardcoded to prevent crashes!
+                  translate={{ x: 300, y: 50 }} 
                   scale={0.8} 
                   nodeSize={{ x: 200, y: 80 }}
                   separation={{ siblings: 1, nonSiblings: 1.2 }}
@@ -240,7 +230,6 @@ function App() {
               </div>
 
             ) : (
-              /* Standard text renderer */
               <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontFamily: "'Fira Code', 'JetBrains Mono', Consolas, monospace", color: getTabColor(activeTab), fontSize: '14px', lineHeight: '1.6', textShadow: activeTab === 'riscv' ? '0 0 2px rgba(165, 214, 255, 0.2)' : 'none' }}>
                 {output[activeTab]}
               </pre>

@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "symTab.h"
 
 int symCount = 0;
@@ -39,7 +39,6 @@ void exitScope() {
     while(symCount > 0 && symtab[symCount - 1].scope == currentScope) {
         symCount--;
     }
-
     currentScope--;
 }
 

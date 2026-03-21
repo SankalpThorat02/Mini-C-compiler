@@ -8,5 +8,5 @@
 body {
   background-color: #1e1e1e;
   color: #fff;
-  overflow: hidden; /* Prevents the whole page from scrolling */
+  overflow: hidden; 
 }

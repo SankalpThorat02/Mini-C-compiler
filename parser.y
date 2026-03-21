@@ -84,6 +84,20 @@ S:
 
         $$ = createNode("BLOCK", NULL, initNode, whileLoop);
     }
+    | ID SWAP ID SEMI {
+        ASTNode* leftId = createNode("ID", $1, NULL, NULL);
+        ASTNode* rightId = createNode("ID", $3, NULL, NULL);
+
+        $$ = createNode("<=>", NULL, leftId, rightId);
+    }
+    | ID INC SEMI {
+        ASTNode* idNode = createNode("ID", $1, NULL, NULL);
+        $$ = createNode("++", NULL, idNode, NULL);
+    }
+    | ID DEC SEMI {
+        ASTNode* idNode = createNode("ID", $1, NULL, NULL);
+        $$ = createNode("--", NULL, idNode, NULL);
+    }
     | LBRACE program RBRACE {
         $$ = createNode("BLOCK", NULL, $2, NULL);
     };

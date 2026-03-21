@@ -60,6 +60,24 @@ char* generateStmtTAC(ASTNode* node) {
         return node->left->value;
     }
 
+    else if(strcmp(node->type, "<=>") == 0) {
+        char* temp = newTemp();
+        printf("%s = %s\n", temp, node->left->value);
+        printf("%s = %s\n", node->left->value, node->right->value);
+        printf("%s = %s\n", node->right->value, temp);
+        return NULL;
+    }
+
+    else if(strcmp(node->type, "++") == 0) {
+        printf("%s = %s + 1\n", node->left->value, node->left->value);
+        return NULL;
+    }
+
+    else if(strcmp(node->type, "--") == 0) {
+        printf("%s = %s - 1\n", node->left->value, node->left->value);
+        return NULL;
+    }
+
     else if(strcmp(node->type, "IF") == 0) {
         char* condTemp = generateExprTAC(node->left);
         char* label = newLabel();

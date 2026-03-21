@@ -98,6 +98,34 @@ void generateStmtRISCV(ASTNode* node) {
         return;
     }
 
+    if (strcmp(node->type, "<=>") == 0) {
+        printf("    la t0, %s\n", node->left->value);
+        printf("    lw t1, 0(t0)\n");
+        
+        printf("    la t2, %s\n", node->right->value);
+        printf("    lw t3, 0(t2)\n");
+        
+        printf("    sw t3, 0(t0)\n");
+        printf("    sw t1, 0(t2)\n\n");
+        return;
+    }
+
+    if (strcmp(node->type, "++") == 0) {
+        printf("    la t0, %s\n", node->left->value);
+        printf("    lw t1, 0(t0)\n");
+        printf("    addi t1, t1, 1\n"); 
+        printf("    sw t1, 0(t0)\n\n");
+        return;
+    }
+
+    if (strcmp(node->type, "--") == 0) {
+        printf("    la t0, %s\n", node->left->value);
+        printf("    lw t1, 0(t0)\n");
+        printf("    addi t1, t1, -1\n");
+        printf("    sw t1, 0(t0)\n\n");
+        return;
+    }
+
     if (strcmp(node->type, "IF") == 0) {
         char* endLabel = newRiscVLabel();
         generateExprRISCV(node->left);

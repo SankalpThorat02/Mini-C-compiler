@@ -119,7 +119,39 @@ void semanticCheck(ASTNode* root) {
             }
         }
     }
+    else if(strcmp(root->type, "<=>") == 0) {
+        if(root->left && root->right) {
+            int idxLeft = lookup(root->left->value);
+            int idxRight = lookup(root->right->value);
 
+            if(idxLeft != -1 && idxRight != -1) {
+                if(strcmp(symtab[idxLeft].type, symtab[idxRight].type) != 0) {
+                    printf("[Line: %d] Semantic Error: Cannot swap variables of different types ('%s' vs '%s')\n", 
+                        root->lineNum, symtab[idxLeft].type, symtab[idxRight].type);
+                    semanticErrors++;
+                }
+            } 
+            else {
+                if(idxLeft == -1) printf("[Line: %d] Semantic Error: '%s' not declared\n", root->lineNum, root->left->value);
+                if(idxRight == -1) printf("[Line: %d] Semantic Error: '%s' not declared\n", root->lineNum, root->right->value);
+                semanticErrors++;
+            }
+        }
+    }
+    else if(strcmp(root->type, "++") == 0 || strcmp(root->type, "--") == 0) {
+        if(root->left) {
+            int idx = lookup(root->left->value);
+            if(idx != -1) {
+                if(strcmp(symtab[idx].type, "int") != 0 && strcmp(symtab[idx].type, "float") != 0) {
+                    printf("[Line: %d] Semantic Error: Increment/Decrement requires a numeric type.\n", root->lineNum);
+                    semanticErrors++;
+                }
+            } else {
+                printf("[Line: %d] Semantic Error: '%s' not declared\n", root->lineNum, root->left->value);
+                semanticErrors++;
+            }
+        }
+    }
 }
 
 void semanticAnalysis(ASTNode* root) {

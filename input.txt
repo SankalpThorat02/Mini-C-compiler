@@ -1,11 +1,11 @@
-int n;
-n = 5;
+int a;
+int b;
+a = 10;
+b = 99;
 
-int sum;
-sum = 0;
+a <=> b;
 
-int i;
-
-for (i = 1; i <= n; i = i + 1) {
-    sum = sum + i;
-}
+int counter;
+counter = 5;
+counter++;
+counter--;
